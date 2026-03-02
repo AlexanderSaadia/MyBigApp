@@ -71,10 +71,10 @@
 			children = (
 				738E6F9C2F56169600F44D22 /* ContentView.swift */,
 				738E6FA32F5624C300F44D22 /* HomeView.swift */,
-				738E6FAB2F5625CB00F44D22 /* AIView.swift */,
-				738E6FA92F5625AE00F44D22 /* JournalView.swift */,
-				738E6FA72F56259600F44D22 /* AddActivityView.swift */,
 				738E6FA52F56257B00F44D22 /* CalendarView.swift */,
+				738E6FA72F56259600F44D22 /* AddActivityView.swift */,
+				738E6FA92F5625AE00F44D22 /* JournalView.swift */,
+				738E6FAB2F5625CB00F44D22 /* AIView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
