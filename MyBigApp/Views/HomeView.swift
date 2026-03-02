@@ -10,31 +10,31 @@ import SwiftUI
 struct HomeView: View {
     var body: some View {
         VStack {
-
+            
             HStack {
                 Text ("Activities")
                 
                 Spacer()
             }
-        VStack {
-            ActivityView(activity: "Running", timesWeekly: "2/7 this week", percentage: "29%")
-            ActivityView(activity: "Xbox", timesWeekly: "1/7 this week", percentage: "7%")
-            ActivityView(activity: "Skiing", timesWeekly: "2/7 this week", percentage: "14%")
-            ActivityView(activity: "Skaiting", timesWeekly: "1/7 this week", percentage: "7%")
-            ActivityView(activity: "Basketball", timesWeekly: "1/7 this week", percentage: "90%")
-            ActivityView(activity: "Walking", timesWeekly: "7/7 this week", percentage: "100%")
-            ActivityView(activity: "GYM", timesWeekly: "7/7 this week", percentage: "7%")
-            ActivityView(activity: "Swiming", timesWeekly: "3/7 this week", percentage: "30%")
+            VStack {
+                ActivityView(activity: "Running", timesWeekly: "2/7 this week", percentage: "29%")
+                ActivityView(activity: "Xbox", timesWeekly: "1/7 this week", percentage: "7%")
+                ActivityView(activity: "Skiing", timesWeekly: "2/7 this week", percentage: "14%")
+                ActivityView(activity: "Skaiting", timesWeekly: "1/7 this week", percentage: "7%")
+                ActivityView(activity: "Basketball", timesWeekly: "1/7 this week", percentage: "90%")
+                ActivityView(activity: "Walking", timesWeekly: "7/7 this week", percentage: "100%")
+                ActivityView(activity: "GYM", timesWeekly: "7/7 this week", percentage: "7%")
+                ActivityView(activity: "Swiming", timesWeekly: "3/7 this week", percentage: "30%")
+                
+            }
             
-        }
-        
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    
-                } label: {
-                    
-                    (Image(systemName: "chevron.backward"))
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        
+                    } label: {
+                        
+                        (Image(systemName: "chevron.backward"))
                     }
                 }
             }
@@ -56,8 +56,10 @@ struct ActivityView: View {
     
     var body: some View {
         
+        Image(systemName: "Running")
+        
         Rectangle()
-            .fill(Color.gray)
+            .fill(.gray)
             .overlay {
                 
                 HStack {
