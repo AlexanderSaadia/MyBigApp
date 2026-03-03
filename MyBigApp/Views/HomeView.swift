@@ -13,18 +13,28 @@ struct HomeView: View {
             
             HStack {
                 Text ("Activities")
-                
+                    .font(.system(size: 21.0, weight: .regular, design: .default))
                 Spacer()
             }
+            
             VStack {
-                ActivityView(activity: "Running", timesWeekly: "2/7 this week", percentage: "29%")
-                ActivityView(activity: "Xbox", timesWeekly: "1/7 this week", percentage: "7%")
-                ActivityView(activity: "Skiing", timesWeekly: "2/7 this week", percentage: "14%")
-                ActivityView(activity: "Skaiting", timesWeekly: "1/7 this week", percentage: "7%")
-                ActivityView(activity: "Basketball", timesWeekly: "1/7 this week", percentage: "90%")
-                ActivityView(activity: "Walking", timesWeekly: "7/7 this week", percentage: "100%")
-                ActivityView(activity: "GYM", timesWeekly: "7/7 this week", percentage: "7%")
-                ActivityView(activity: "Swiming", timesWeekly: "3/7 this week", percentage: "30%")
+                ActivityView(activity: "Running", timesWeekly: "2/7 this week", percentage: "29%", symbol: "figure.run")
+                
+                ActivityView(activity: "Video Games", timesWeekly: "1/7 this week", percentage: "7%", symbol: "gamecontroller.fill")
+                
+                ActivityView(activity: "Skiing", timesWeekly: "2/7 this week", percentage: "14%", symbol: "figure.skiing.downhill")
+                
+                ActivityView(activity: "Skating", timesWeekly: "1/7 this week", percentage: "7%", symbol: "figure.skating")
+                
+                ActivityView(activity: "Basketball", timesWeekly: "1/7 this week", percentage: "90%", symbol: "basketball.fill")
+                
+                ActivityView(activity: "Walking", timesWeekly: "7/7 this week", percentage: "100%", symbol: "figure.walk")
+                
+                ActivityView(activity: "GYM", timesWeekly: "7/7 this week", percentage: "7%", symbol: "dumbbell")
+                
+                ActivityView(activity: "Swimming", timesWeekly: "3/7 this week", percentage: "30%", symbol: "figure.pool.swim")
+                
+                ActivityView(activity: "Studying", timesWeekly: "6/7 this week", percentage: "92%", symbol: "book.fill")
                 
             }
             
@@ -53,16 +63,19 @@ struct ActivityView: View {
     let activity: String
     let timesWeekly: String
     let percentage: String
+    let symbol: String
     
     var body: some View {
-        
-        Image(systemName: "Running")
         
         Rectangle()
             .fill(.gray)
             .overlay {
                 
                 HStack {
+                    
+                    Image(systemName: symbol)
+                        .font(.system(size: 25.0))
+
                     
                     VStack(alignment: .leading){
                         Text(activity)
@@ -75,6 +88,7 @@ struct ActivityView: View {
                     Text(percentage)
                         .foregroundStyle(.green)
                 }
+                .padding(8)
             }
     }
 }

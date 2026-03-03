@@ -14,5 +14,5 @@ struct AddActivityView: View {
 }
 
 #Preview {
-    AddActivityView()
+    ContentView()
 }

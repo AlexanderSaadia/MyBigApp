@@ -14,5 +14,5 @@ struct CalendarView: View {
 }
 
 #Preview {
-    CalendarView()
+    ContentView()
 }

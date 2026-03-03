@@ -19,7 +19,7 @@ struct ContentView: View {
             
             CalendarView()
                 .tabItem {
-                    Image(systemName: "calendar.fill")
+                    Image(systemName: "calendar")
                 }
                 .tag(2)
 
