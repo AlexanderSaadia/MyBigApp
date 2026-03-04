@@ -11,7 +11,7 @@ struct SearchView: View {
     var body: some View {
         NavigationStack {
             VStack {
-              
+                
                 Spacer()
                     .containerRelativeFrame(.vertical, count: 5, span: 1, spacing: 0)
                 
@@ -25,7 +25,7 @@ struct SearchView: View {
                     VStack {
                         HStack {
                             Text ("Wildest Dreams")
-                                .font(.system(size: 25.0, weight: .semibold, design: .default))
+                                .font(.system(size: 30.0, weight: .semibold, design: .default))
                             Spacer()
                         }
                         HStack {
@@ -47,9 +47,9 @@ struct SearchView: View {
                     
                     Spacer()
                         .containerRelativeFrame(.horizontal, count: 90, span: 32, spacing: 0)
-
                     
-         
+                    
+                    
                     Text("Remove from                Favorites")
                         .foregroundStyle(.blue)
                     
@@ -81,7 +81,7 @@ struct SearchView: View {
                         HStack {
                             Text ("View album")
                                 .foregroundStyle(.blue)
-
+                            
                             Spacer()
                         }
                         .padding(2)
