@@ -14,12 +14,14 @@ struct MusicView: View {
             SearchView()
                 .tabItem {
                     Image(systemName: "text.page.badge.magnifyingglass")
+                    Text ("Search")
                 }
                 .tag(1)
             
             FavoritesView()
                 .tabItem {
                     Image(systemName: "heart.fill")
+                    Text ("Favorites")
                 }
                 .tag(2)
         }

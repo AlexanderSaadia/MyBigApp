@@ -50,8 +50,9 @@ struct SearchView: View {
                         .foregroundStyle(.blue)
                     
                     Spacer()
-                    
+         
                     Text("Remove from Favorites")
+                        .foregroundStyle(.blue)
                     
                     Image(systemName: "heart.fill")
                         .font(.system(size: 50.0))
@@ -67,18 +68,22 @@ struct SearchView: View {
                         HStack {
                             Text ("Store Links")
                                 .font(.system(size: 25.0, weight: .semibold, design: .default))
+                            Spacer()
                         }
                         .padding(2)
                         
                         HStack {
                             Text ("View artist")
                                 .foregroundStyle(.blue)
+                            Spacer()
                         }
                         .padding(2)
                         
                         HStack {
                             Text ("View album")
                                 .foregroundStyle(.blue)
+
+                            Spacer()
                         }
                         .padding(2)
                     }
@@ -91,19 +96,21 @@ struct SearchView: View {
                 
             }
             
+            .toolbar {
+                
+                ToolbarItem(placement: .topBarLeading) {
+                    
+                    Button(action: {
+                        
+                    }) {
+                        Image(systemName: "chevron.left")
+                        
+                    }
+                }
+            }
         }
-        
-        
     }
-    
-    
-    
-    
-    
 }
-
-
-
 
 #Preview {
     MusicView()
