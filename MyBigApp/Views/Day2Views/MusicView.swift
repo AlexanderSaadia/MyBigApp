@@ -13,7 +13,7 @@ struct MusicView: View {
             
             SearchView()
                 .tabItem {
-                    Image(systemName: "house.fill")
+                    Image(systemName: "text.page.badge.magnifyingglass")
                 }
                 .tag(1)
             
