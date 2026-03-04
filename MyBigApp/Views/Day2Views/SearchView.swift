@@ -11,11 +11,7 @@ struct SearchView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                HStack {
-                    Image(systemName: "chevron.left")
-                }
-                
-                
+              
                 Spacer()
                     .containerRelativeFrame(.vertical, count: 5, span: 1, spacing: 0)
                 
@@ -47,16 +43,19 @@ struct SearchView: View {
                     
                     Image(systemName: "play.circle.fill")
                         .font(.system(size: 50.0))
-                        .foregroundStyle(.blue)
+                        .foregroundStyle(.theBlue)
                     
                     Spacer()
+                        .containerRelativeFrame(.horizontal, count: 90, span: 32, spacing: 0)
+
+                    
          
-                    Text("Remove from Favorites")
+                    Text("Remove from                Favorites")
                         .foregroundStyle(.blue)
                     
                     Image(systemName: "heart.fill")
                         .font(.system(size: 50.0))
-                        .foregroundStyle(.red)
+                        .foregroundStyle(.darkRed)
                     
                 }
                 .padding(15)
