@@ -30,7 +30,7 @@ struct HomeView: View {
                 
                 ActivityView(activity: "Walking", timesWeekly: "7/7 this week", percentage: "100%", symbol: "figure.walk")
                 
-                ActivityView(activity: "GYM", timesWeekly: "7/7 this week", percentage: "7%", symbol: "dumbbell")
+                ActivityView(activity: "GYM", timesWeekly: "7/7 this week", percentage: "100%", symbol: "dumbbell")
                 
                 ActivityView(activity: "Swimming", timesWeekly: "3/7 this week", percentage: "30%", symbol: "figure.pool.swim")
                 

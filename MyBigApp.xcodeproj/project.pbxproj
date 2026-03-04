@@ -15,6 +15,9 @@
 		738E6FA82F56259600F44D22 /* AddActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6FA72F56259600F44D22 /* AddActivityView.swift */; };
 		738E6FAA2F5625AE00F44D22 /* JournalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6FA92F5625AE00F44D22 /* JournalView.swift */; };
 		738E6FAC2F5625CB00F44D22 /* AIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6FAB2F5625CB00F44D22 /* AIView.swift */; };
+		738E6FAE2F586F9A00F44D22 /* MusicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6FAD2F586F9A00F44D22 /* MusicView.swift */; };
+		738E6FB12F586FD800F44D22 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6FB02F586FD800F44D22 /* SearchView.swift */; };
+		738E6FB32F586FF500F44D22 /* FavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6FB22F586FF500F44D22 /* FavoritesView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +30,9 @@
 		738E6FA72F56259600F44D22 /* AddActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddActivityView.swift; sourceTree = "<group>"; };
 		738E6FA92F5625AE00F44D22 /* JournalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalView.swift; sourceTree = "<group>"; };
 		738E6FAB2F5625CB00F44D22 /* AIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIView.swift; sourceTree = "<group>"; };
+		738E6FAD2F586F9A00F44D22 /* MusicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicView.swift; sourceTree = "<group>"; };
+		738E6FB02F586FD800F44D22 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		738E6FB22F586FF500F44D22 /* FavoritesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,8 +81,19 @@
 				738E6FA72F56259600F44D22 /* AddActivityView.swift */,
 				738E6FA92F5625AE00F44D22 /* JournalView.swift */,
 				738E6FAB2F5625CB00F44D22 /* AIView.swift */,
+				738E6FAF2F586FA700F44D22 /* Day2Views */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		738E6FAF2F586FA700F44D22 /* Day2Views */ = {
+			isa = PBXGroup;
+			children = (
+				738E6FAD2F586F9A00F44D22 /* MusicView.swift */,
+				738E6FB02F586FD800F44D22 /* SearchView.swift */,
+				738E6FB22F586FF500F44D22 /* FavoritesView.swift */,
+			);
+			path = Day2Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -151,12 +168,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				738E6FB32F586FF500F44D22 /* FavoritesView.swift in Sources */,
 				738E6FAA2F5625AE00F44D22 /* JournalView.swift in Sources */,
+				738E6FB12F586FD800F44D22 /* SearchView.swift in Sources */,
 				738E6FA42F5624C300F44D22 /* HomeView.swift in Sources */,
 				738E6F9F2F56169600F44D22 /* ContentView.swift in Sources */,
 				738E6FA62F56257B00F44D22 /* CalendarView.swift in Sources */,
 				738E6FAC2F5625CB00F44D22 /* AIView.swift in Sources */,
 				738E6FA02F56169600F44D22 /* MyBigAppApp.swift in Sources */,
+				738E6FAE2F586F9A00F44D22 /* MusicView.swift in Sources */,
 				738E6FA82F56259600F44D22 /* AddActivityView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
