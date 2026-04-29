@@ -14,5 +14,5 @@ struct JournalView: View {
 }
 
 #Preview {
-    ContentView()
+    PickerView()
 }

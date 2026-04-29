@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		738E6F9F2F56169600F44D22 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6F9C2F56169600F44D22 /* ContentView.swift */; };
+		736551D12FA1801700869F7B /* ActivitiesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 736551D02FA1801700869F7B /* ActivitiesView.swift */; };
+		738E6F9F2F56169600F44D22 /* MainOrganization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6F9C2F56169600F44D22 /* MainOrganization.swift */; };
 		738E6FA02F56169600F44D22 /* MyBigAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6F9D2F56169600F44D22 /* MyBigAppApp.swift */; };
 		738E6FA12F56169600F44D22 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 738E6F9B2F56169600F44D22 /* Assets.xcassets */; };
 		738E6FA42F5624C300F44D22 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6FA32F5624C300F44D22 /* HomeView.swift */; };
@@ -21,9 +22,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		736551D02FA1801700869F7B /* ActivitiesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivitiesView.swift; sourceTree = "<group>"; };
 		738E6F8D2F56167900F44D22 /* MyBigApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyBigApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		738E6F9B2F56169600F44D22 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		738E6F9C2F56169600F44D22 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		738E6F9C2F56169600F44D22 /* MainOrganization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainOrganization.swift; sourceTree = "<group>"; };
 		738E6F9D2F56169600F44D22 /* MyBigAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyBigAppApp.swift; sourceTree = "<group>"; };
 		738E6FA32F5624C300F44D22 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		738E6FA52F56257B00F44D22 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
@@ -46,6 +48,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		736551D42FA183C800869F7B /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				738E6F9C2F56169600F44D22 /* MainOrganization.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		738E6F842F56167900F44D22 = {
 			isa = PBXGroup;
 			children = (
@@ -66,8 +76,10 @@
 			isa = PBXGroup;
 			children = (
 				738E6F9D2F56169600F44D22 /* MyBigAppApp.swift */,
+				736551D42FA183C800869F7B /* Model */,
 				738E6FA22F5616A500F44D22 /* Views */,
 				738E6F9B2F56169600F44D22 /* Assets.xcassets */,
+				738E6FAF2F586FA700F44D22 /* Day2Views */,
 			);
 			path = MyBigApp;
 			sourceTree = "<group>";
@@ -75,13 +87,12 @@
 		738E6FA22F5616A500F44D22 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				738E6F9C2F56169600F44D22 /* ContentView.swift */,
 				738E6FA32F5624C300F44D22 /* HomeView.swift */,
+				736551D02FA1801700869F7B /* ActivitiesView.swift */,
 				738E6FA52F56257B00F44D22 /* CalendarView.swift */,
 				738E6FA72F56259600F44D22 /* AddActivityView.swift */,
 				738E6FA92F5625AE00F44D22 /* JournalView.swift */,
 				738E6FAB2F5625CB00F44D22 /* AIView.swift */,
-				738E6FAF2F586FA700F44D22 /* Day2Views */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -169,10 +180,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				738E6FB32F586FF500F44D22 /* FavoritesView.swift in Sources */,
+				736551D12FA1801700869F7B /* ActivitiesView.swift in Sources */,
 				738E6FAA2F5625AE00F44D22 /* JournalView.swift in Sources */,
 				738E6FB12F586FD800F44D22 /* SearchView.swift in Sources */,
 				738E6FA42F5624C300F44D22 /* HomeView.swift in Sources */,
-				738E6F9F2F56169600F44D22 /* ContentView.swift in Sources */,
+				738E6F9F2F56169600F44D22 /* MainOrganization.swift in Sources */,
 				738E6FA62F56257B00F44D22 /* CalendarView.swift in Sources */,
 				738E6FAC2F5625CB00F44D22 /* AIView.swift in Sources */,
 				738E6FA02F56169600F44D22 /* MyBigAppApp.swift in Sources */,

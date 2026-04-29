@@ -14,5 +14,5 @@ struct AIView: View {
 }
 
 #Preview {
-    ContentView()
+    PickerView()
 }

@@ -1,95 +1,113 @@
-//
-//  HomeView.swift
-//  MyBigApp
-//
-//  Created by Alexander Saadia on 02/03/26.
-//
-
 import SwiftUI
 
 struct HomeView: View {
+    @State private var selection = 1
     var body: some View {
-        VStack {
-            
-            HStack {
-                Text ("Activities")
-                    .font(.system(size: 21.0, weight: .regular, design: .default))
-                Spacer()
-            }
-            
+        NavigationStack {
             VStack {
-                ActivityView(activity: "Running", timesWeekly: "2/7 this week", percentage: "29%", symbol: "figure.run")
+                HStack {
+                    ZStack {
+                        Circle()
+                    }
+                    .containerRelativeFrame(.horizontal, count: 5, span: 1, spacing: 0)
+                    
+                    Text ("Alexander Saadia")
+                    
+                    Spacer()
+                }
                 
-                ActivityView(activity: "Video Games", timesWeekly: "1/7 this week", percentage: "7%", symbol: "gamecontroller.fill")
+                VStack {
+                    Rectangle()
+                        .fill(Color.blue)
+                        .overlay {
+                            VStack {
+                                HStack {
+                                    Text ("Activities Complited")
+                                    
+                                    Spacer()
+                                    
+                                    Text ("View Stats")
+                                }
+                                Spacer()
+                                
+                                Circle()
+                                    .aspectRatio(2.0/1.0, contentMode: .fit)
+                            }
+                            
+                            
+                            
+                        }
+                }
+                .containerRelativeFrame(.vertical, count: 7, span: 2, spacing: 0)
                 
-                ActivityView(activity: "Skiing", timesWeekly: "2/7 this week", percentage: "14%", symbol: "figure.skiing.downhill")
+                Spacer()
                 
-                ActivityView(activity: "Skating", timesWeekly: "1/7 this week", percentage: "7%", symbol: "figure.skating")
+                Text ("Todays Activities")
                 
-                ActivityView(activity: "Basketball", timesWeekly: "1/7 this week", percentage: "90%", symbol: "basketball.fill")
-                
-                ActivityView(activity: "Walking", timesWeekly: "7/7 this week", percentage: "100%", symbol: "figure.walk")
-                
-                ActivityView(activity: "GYM", timesWeekly: "7/7 this week", percentage: "100%", symbol: "dumbbell")
-                
-                ActivityView(activity: "Swimming", timesWeekly: "3/7 this week", percentage: "30%", symbol: "figure.pool.swim")
-                
-                ActivityView(activity: "Studying", timesWeekly: "6/7 this week", percentage: "92%", symbol: "book.fill")
-                
-            }
-            
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
+                List {
+                    VStack {
+                        MainActivityView(activity: "Running", checkmark: true)
+                        MainActivityView(activity: "Basketball", checkmark: true)
+                        MainActivityView(activity: "Meditating ", checkmark: true)
                         
-                    } label: {
-                        
-                        (Image(systemName: "chevron.backward"))
+                    
                     }
                 }
+                .listStyle(.plain)
+            }
+            
+           
+            
+            Text ("Goals")
+            
+            Rectangle()
+                .fill(.yellow)
+                .overlay {
+                    VStack{
+                        
+                        Picker ("Current Selection", selection: $selection) {
+                            Text ("Daily") .tag("Daily")
+                            Text ("Weekly") .tag("Weekly")
+                            Text ("Monthly") .tag("Monthly")
+                            Text ("Yearly") .tag("Yearly")
+                        }
+                        .pickerStyle(.segmented)
+                        
+                        Spacer()
+                        
+                        HStack {
+                            Text ("Goals...")
+                            Spacer()
+                        }
+                        
+                        Spacer()
+                    }
+                    
+                }
+        }
+        
+    }
+    
+}
+#Preview {
+    PickerView()
+}
+
+struct MainActivityView: View {
+    
+    let activity: String
+    let checkmark: Bool
+    
+    var body: some View {
+        HStack {
+            Text (activity)
+            
+            Spacer()
+            
+            VStack(alignment: .trailing){
+                Text("\(Image(systemName: checkmark ? "checkmark.circle.fill" : "checkmark.circle  "))")
+                    .foregroundStyle(.green)
             }
         }
     }
 }
-
-
-
-#Preview {
-    ContentView()
-}
-
-struct ActivityView: View {
-    
-    let activity: String
-    let timesWeekly: String
-    let percentage: String
-    let symbol: String
-    
-    var body: some View {
-        
-        Rectangle()
-            .fill(.gray)
-            .overlay {
-                
-                HStack {
-                    
-                    Image(systemName: symbol)
-                        .font(.system(size: 25.0))
-
-                    
-                    VStack(alignment: .leading){
-                        Text(activity)
-                            .font(.system(size: 25.0, weight: .semibold, design: .default))
-                        Text(timesWeekly)
-                    }
-                    
-                    Spacer()
-                    
-                    Text(percentage)
-                        .foregroundStyle(.green)
-                }
-                .padding(8)
-            }
-    }
-}
-

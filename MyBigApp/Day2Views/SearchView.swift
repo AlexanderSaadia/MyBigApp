@@ -112,5 +112,5 @@ struct SearchView: View {
 }
 
 #Preview {
-    MusicView()
+    SearchView()
 }
