@@ -8,43 +8,37 @@
 import SwiftUI
 
 struct ActivitiesView: View {
+    // MARK: - Stored properties
+    @Environment(ActivityStore.self) private var activityStore
+    
+    // MARK: - Body
     var body: some View {
         VStack {
-            
             HStack {
                 Text ("Activities")
                     .font(.system(size: 21.0, weight: .regular, design: .default))
                 Spacer()
             }
+            .padding(.horizontal)
             
-            VStack {
-                ActivityView(activity: "Running", timesWeekly: "2/7 this week", percentage: "29%", symbol: "figure.run")
-                
-                ActivityView(activity: "Video Games", timesWeekly: "1/7 this week", percentage: "7%", symbol: "gamecontroller.fill")
-                
-                ActivityView(activity: "Skiing", timesWeekly: "2/7 this week", percentage: "14%", symbol: "figure.skiing.downhill")
-                
-                ActivityView(activity: "Skating", timesWeekly: "1/7 this week", percentage: "7%", symbol: "figure.skating")
-                
-                ActivityView(activity: "Basketball", timesWeekly: "1/7 this week", percentage: "90%", symbol: "basketball.fill")
-                
-                ActivityView(activity: "Walking", timesWeekly: "7/7 this week", percentage: "100%", symbol: "figure.walk")
-                
-                ActivityView(activity: "GYM", timesWeekly: "7/7 this week", percentage: "100%", symbol: "dumbbell")
-                
-                ActivityView(activity: "Swimming", timesWeekly: "3/7 this week", percentage: "30%", symbol: "figure.pool.swim")
-                
-                ActivityView(activity: "Studying", timesWeekly: "6/7 this week", percentage: "92%", symbol: "book.fill")
-                
+            ScrollView {
+                VStack(spacing: 10) {
+                    ForEach(activityStore.activities) { activity in
+                        ActivityView(activity: activity.name, 
+                                     timesWeekly: "Added on " + activity.date.formatted(date: .abbreviated, time: .omitted), 
+                                     percentage: "", 
+                                     symbol: activity.symbol)
+                    }
+                }
+                .padding()
             }
             
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
-                        
+                        // Back action handled by PickerView state
                     } label: {
-                        
-                        (Image(systemName: "chevron.backward"))
+                        Image(systemName: "chevron.backward")
                     }
                 }
             }

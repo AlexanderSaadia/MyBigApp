@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct MyBigAppApp: App {
+    @State private var activityStore = ActivityStore()
+    
     var body: some Scene {
         WindowGroup {
             PickerView()
+                .environment(activityStore)
         }
     }
 }

@@ -9,32 +9,32 @@
 /* Begin PBXBuildFile section */
 		736551D12FA1801700869F7B /* ActivitiesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 736551D02FA1801700869F7B /* ActivitiesView.swift */; };
 		738E6F9F2F56169600F44D22 /* MainOrganization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6F9C2F56169600F44D22 /* MainOrganization.swift */; };
-		738E6FA02F56169600F44D22 /* MyBigAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6F9D2F56169600F44D22 /* MyBigAppApp.swift */; };
+		738E6FA02F56169600F44D22 /* Life Legue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6F9D2F56169600F44D22 /* Life Legue.swift */; };
 		738E6FA12F56169600F44D22 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 738E6F9B2F56169600F44D22 /* Assets.xcassets */; };
 		738E6FA42F5624C300F44D22 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6FA32F5624C300F44D22 /* HomeView.swift */; };
 		738E6FA62F56257B00F44D22 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6FA52F56257B00F44D22 /* CalendarView.swift */; };
 		738E6FA82F56259600F44D22 /* AddActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6FA72F56259600F44D22 /* AddActivityView.swift */; };
 		738E6FAA2F5625AE00F44D22 /* JournalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6FA92F5625AE00F44D22 /* JournalView.swift */; };
 		738E6FAC2F5625CB00F44D22 /* AIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6FAB2F5625CB00F44D22 /* AIView.swift */; };
-		738E6FAE2F586F9A00F44D22 /* MusicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6FAD2F586F9A00F44D22 /* MusicView.swift */; };
-		738E6FB12F586FD800F44D22 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6FB02F586FD800F44D22 /* SearchView.swift */; };
-		738E6FB32F586FF500F44D22 /* FavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6FB22F586FF500F44D22 /* FavoritesView.swift */; };
+		73F38FC92FAE682E0000D876 /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F38FC82FAE682E0000D876 /* Activity.swift */; };
+		73F38FCB2FAE682E0000D876 /* ActivityStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F38FCA2FAE682E0000D876 /* ActivityStore.swift */; };
+		73F38FCD2FAE68520000D876 /* CalendarUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F38FCC2FAE68520000D876 /* CalendarUtils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		736551D02FA1801700869F7B /* ActivitiesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivitiesView.swift; sourceTree = "<group>"; };
-		738E6F8D2F56167900F44D22 /* MyBigApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyBigApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		738E6F8D2F56167900F44D22 /* Life Legue App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Life Legue App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		738E6F9B2F56169600F44D22 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		738E6F9C2F56169600F44D22 /* MainOrganization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainOrganization.swift; sourceTree = "<group>"; };
-		738E6F9D2F56169600F44D22 /* MyBigAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyBigAppApp.swift; sourceTree = "<group>"; };
+		738E6F9D2F56169600F44D22 /* Life Legue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Life Legue.swift"; sourceTree = "<group>"; };
 		738E6FA32F5624C300F44D22 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		738E6FA52F56257B00F44D22 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		738E6FA72F56259600F44D22 /* AddActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddActivityView.swift; sourceTree = "<group>"; };
 		738E6FA92F5625AE00F44D22 /* JournalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalView.swift; sourceTree = "<group>"; };
 		738E6FAB2F5625CB00F44D22 /* AIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIView.swift; sourceTree = "<group>"; };
-		738E6FAD2F586F9A00F44D22 /* MusicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicView.swift; sourceTree = "<group>"; };
-		738E6FB02F586FD800F44D22 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
-		738E6FB22F586FF500F44D22 /* FavoritesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesView.swift; sourceTree = "<group>"; };
+		73F38FC82FAE682E0000D876 /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
+		73F38FCA2FAE682E0000D876 /* ActivityStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityStore.swift; sourceTree = "<group>"; };
+		73F38FCC2FAE68520000D876 /* CalendarUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarUtils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +52,9 @@
 			isa = PBXGroup;
 			children = (
 				738E6F9C2F56169600F44D22 /* MainOrganization.swift */,
+				73F38FC82FAE682E0000D876 /* Activity.swift */,
+				73F38FCA2FAE682E0000D876 /* ActivityStore.swift */,
+				73F38FCC2FAE68520000D876 /* CalendarUtils.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -59,7 +62,7 @@
 		738E6F842F56167900F44D22 = {
 			isa = PBXGroup;
 			children = (
-				738E6F9E2F56169600F44D22 /* MyBigApp */,
+				738E6F9E2F56169600F44D22 /* MyLifeLegueApp */,
 				738E6F8E2F56167900F44D22 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -67,21 +70,20 @@
 		738E6F8E2F56167900F44D22 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				738E6F8D2F56167900F44D22 /* MyBigApp.app */,
+				738E6F8D2F56167900F44D22 /* Life Legue App.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		738E6F9E2F56169600F44D22 /* MyBigApp */ = {
+		738E6F9E2F56169600F44D22 /* MyLifeLegueApp */ = {
 			isa = PBXGroup;
 			children = (
-				738E6F9D2F56169600F44D22 /* MyBigAppApp.swift */,
+				738E6F9D2F56169600F44D22 /* Life Legue.swift */,
 				736551D42FA183C800869F7B /* Model */,
 				738E6FA22F5616A500F44D22 /* Views */,
 				738E6F9B2F56169600F44D22 /* Assets.xcassets */,
-				738E6FAF2F586FA700F44D22 /* Day2Views */,
 			);
-			path = MyBigApp;
+			path = MyLifeLegueApp;
 			sourceTree = "<group>";
 		};
 		738E6FA22F5616A500F44D22 /* Views */ = {
@@ -97,22 +99,12 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		738E6FAF2F586FA700F44D22 /* Day2Views */ = {
-			isa = PBXGroup;
-			children = (
-				738E6FAD2F586F9A00F44D22 /* MusicView.swift */,
-				738E6FB02F586FD800F44D22 /* SearchView.swift */,
-				738E6FB22F586FF500F44D22 /* FavoritesView.swift */,
-			);
-			path = Day2Views;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		738E6F8C2F56167900F44D22 /* MyBigApp */ = {
+		738E6F8C2F56167900F44D22 /* Life Legue App */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 738E6F982F56167B00F44D22 /* Build configuration list for PBXNativeTarget "MyBigApp" */;
+			buildConfigurationList = 738E6F982F56167B00F44D22 /* Build configuration list for PBXNativeTarget "Life Legue App" */;
 			buildPhases = (
 				738E6F892F56167900F44D22 /* Sources */,
 				738E6F8A2F56167900F44D22 /* Frameworks */,
@@ -122,11 +114,11 @@
 			);
 			dependencies = (
 			);
-			name = MyBigApp;
+			name = "Life Legue App";
 			packageProductDependencies = (
 			);
 			productName = MyBigApp;
-			productReference = 738E6F8D2F56167900F44D22 /* MyBigApp.app */;
+			productReference = 738E6F8D2F56167900F44D22 /* Life Legue App.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -144,7 +136,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 738E6F882F56167900F44D22 /* Build configuration list for PBXProject "MyBigApp" */;
+			buildConfigurationList = 738E6F882F56167900F44D22 /* Build configuration list for PBXProject "Life Legue App" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -158,7 +150,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				738E6F8C2F56167900F44D22 /* MyBigApp */,
+				738E6F8C2F56167900F44D22 /* Life Legue App */,
 			);
 		};
 /* End PBXProject section */
@@ -179,17 +171,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				738E6FB32F586FF500F44D22 /* FavoritesView.swift in Sources */,
 				736551D12FA1801700869F7B /* ActivitiesView.swift in Sources */,
 				738E6FAA2F5625AE00F44D22 /* JournalView.swift in Sources */,
-				738E6FB12F586FD800F44D22 /* SearchView.swift in Sources */,
+				73F38FCD2FAE68520000D876 /* CalendarUtils.swift in Sources */,
 				738E6FA42F5624C300F44D22 /* HomeView.swift in Sources */,
 				738E6F9F2F56169600F44D22 /* MainOrganization.swift in Sources */,
+				73F38FC92FAE682E0000D876 /* Activity.swift in Sources */,
 				738E6FA62F56257B00F44D22 /* CalendarView.swift in Sources */,
 				738E6FAC2F5625CB00F44D22 /* AIView.swift in Sources */,
-				738E6FA02F56169600F44D22 /* MyBigAppApp.swift in Sources */,
-				738E6FAE2F586F9A00F44D22 /* MusicView.swift in Sources */,
+				738E6FA02F56169600F44D22 /* Life Legue.swift in Sources */,
 				738E6FA82F56259600F44D22 /* AddActivityView.swift in Sources */,
+				73F38FCB2FAE682E0000D876 /* ActivityStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -384,7 +376,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		738E6F882F56167900F44D22 /* Build configuration list for PBXProject "MyBigApp" */ = {
+		738E6F882F56167900F44D22 /* Build configuration list for PBXProject "Life Legue App" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				738E6F962F56167B00F44D22 /* Debug */,
@@ -393,7 +385,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		738E6F982F56167B00F44D22 /* Build configuration list for PBXNativeTarget "MyBigApp" */ = {
+		738E6F982F56167B00F44D22 /* Build configuration list for PBXNativeTarget "Life Legue App" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				738E6F992F56167B00F44D22 /* Debug */,
