@@ -19,6 +19,7 @@
 		73F38FC92FAE682E0000D876 /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F38FC82FAE682E0000D876 /* Activity.swift */; };
 		73F38FCB2FAE682E0000D876 /* ActivityStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F38FCA2FAE682E0000D876 /* ActivityStore.swift */; };
 		73F38FCD2FAE68520000D876 /* CalendarUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F38FCC2FAE68520000D876 /* CalendarUtils.swift */; };
+		73F38FCF2FAE6C970000D876 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 73F38FCE2FAE6C970000D876 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +36,7 @@
 		73F38FC82FAE682E0000D876 /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
 		73F38FCA2FAE682E0000D876 /* ActivityStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityStore.swift; sourceTree = "<group>"; };
 		73F38FCC2FAE68520000D876 /* CalendarUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarUtils.swift; sourceTree = "<group>"; };
+		73F38FCE2FAE6C970000D876 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +80,7 @@
 		738E6F9E2F56169600F44D22 /* MyLifeLegueApp */ = {
 			isa = PBXGroup;
 			children = (
+				73F38FCE2FAE6C970000D876 /* README.md */,
 				738E6F9D2F56169600F44D22 /* Life Legue.swift */,
 				736551D42FA183C800869F7B /* Model */,
 				738E6FA22F5616A500F44D22 /* Views */,
@@ -160,6 +163,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73F38FCF2FAE6C970000D876 /* README.md in Resources */,
 				738E6FA12F56169600F44D22 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
