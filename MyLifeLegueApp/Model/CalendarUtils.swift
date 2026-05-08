@@ -18,10 +18,17 @@ struct CalendarUtils {
         
         var result: [Date] = []
         var current = monthFirstWeek.start
-        while current < monthLastWeek.end {
-            result.append(current)
-            current = calendar.date(byAdding: .day, value: 1, to: current)!
+        
+        // Calculate the number of days to avoid infinite loop
+        let components = calendar.dateComponents([.day], from: monthFirstWeek.start, to: monthLastWeek.end)
+        let numberOfDays = components.day ?? 0
+        
+        for dayOffset in 0..<numberOfDays {
+            if let nextDate = calendar.date(byAdding: .day, value: dayOffset, to: monthFirstWeek.start) {
+                result.append(nextDate)
+            }
         }
+        
         return result
     }
     
@@ -29,10 +36,10 @@ struct CalendarUtils {
         guard let weekInterval = calendar.dateInterval(of: .weekOfYear, for: date) else { return [] }
         
         var result: [Date] = []
-        var current = weekInterval.start
-        for _ in 0..<7 {
-            result.append(current)
-            current = calendar.date(byAdding: .day, value: 1, to: current)!
+        for dayOffset in 0..<7 {
+            if let nextDate = calendar.date(byAdding: .day, value: dayOffset, to: weekInterval.start) {
+                result.append(nextDate)
+            }
         }
         return result
     }
@@ -41,10 +48,10 @@ struct CalendarUtils {
         guard let yearInterval = calendar.dateInterval(of: .year, for: date) else { return [] }
         
         var result: [Date] = []
-        var current = yearInterval.start
-        for _ in 0..<12 {
-            result.append(current)
-            current = calendar.date(byAdding: .month, value: 1, to: current)!
+        for monthOffset in 0..<12 {
+            if let nextDate = calendar.date(byAdding: .month, value: monthOffset, to: yearInterval.start) {
+                result.append(nextDate)
+            }
         }
         return result
     }

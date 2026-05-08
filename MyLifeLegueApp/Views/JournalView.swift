@@ -15,4 +15,5 @@ struct JournalView: View {
 
 #Preview {
     PickerView()
+        .environment(ActivityStore())
 }

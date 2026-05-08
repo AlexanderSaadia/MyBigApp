@@ -91,6 +91,7 @@ struct HomeView: View {
 }
 #Preview {
     PickerView()
+        .environment(ActivityStore())
 }
 
 struct MainActivityView: View {

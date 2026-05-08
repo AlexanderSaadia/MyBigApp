@@ -132,50 +132,59 @@ struct WeeklyCalendarView: View {
         ScrollView {
             VStack(spacing: 15) {
                 ForEach(days, id: \.self) { day in
-                    VStack(alignment: .leading) {
-                        HStack {
-                            Text(CalendarUtils.shortWeekday(from: day))
-                                .font(.headline)
-                                .foregroundColor(.secondary)
-                            Text(CalendarUtils.dayNumber(from: day))
-                                .font(.title3)
-                                .fontWeight(.bold)
-                            Spacer()
-                        }
-                        .padding(.horizontal)
-                        
-                        let activities = activityStore.activities(for: day)
-                        if activities.isEmpty {
-                            Text("No activities")
-                                .font(.caption)
-                                .foregroundColor(.gray)
-                                .padding(.horizontal)
-                        } else {
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack {
-                                    ForEach(activities) { activity in
-                                        VStack {
-                                            Image(systemName: activity.symbol)
-                                                .font(.title2)
-                                                .foregroundColor(.blue)
-                                            Text(activity.name)
-                                                .font(.caption2)
-                                        }
-                                        .frame(width: 60)
-                                        .padding(8)
-                                        .background(Color.blue.opacity(0.1))
-                                        .cornerRadius(10)
-                                    }
-                                }
-                                .padding(.horizontal)
-                            }
-                        }
-                        Divider()
-                            .padding(.top, 5)
-                    }
+                    WeeklyDayRow(day: day)
                 }
             }
             .padding(.vertical)
+        }
+    }
+}
+
+struct WeeklyDayRow: View {
+    @Environment(ActivityStore.self) private var activityStore
+    let day: Date
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            HStack {
+                Text(CalendarUtils.shortWeekday(from: day))
+                    .font(.headline)
+                    .foregroundColor(.secondary)
+                Text(CalendarUtils.dayNumber(from: day))
+                    .font(.title3)
+                    .fontWeight(.bold)
+                Spacer()
+            }
+            .padding(.horizontal)
+            
+            let activities = activityStore.activities(for: day)
+            if activities.isEmpty {
+                Text("No activities")
+                    .font(.caption)
+                    .foregroundColor(.gray)
+                    .padding(.horizontal)
+            } else {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack {
+                        ForEach(activities) { activity in
+                            VStack {
+                                Image(systemName: activity.symbol)
+                                    .font(.title2)
+                                    .foregroundColor(.blue)
+                                Text(activity.name)
+                                    .font(.caption2)
+                            }
+                            .frame(width: 60)
+                            .padding(8)
+                            .background(Color.blue.opacity(0.1))
+                            .cornerRadius(10)
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+            }
+            Divider()
+                .padding(.top, 5)
         }
     }
 }
@@ -298,4 +307,5 @@ struct MiniMonthView: View {
 
 #Preview {
     PickerView()
+        .environment(ActivityStore())
 }

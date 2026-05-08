@@ -70,5 +70,6 @@ struct AddActivityView: View {
 }
 
 #Preview {
-    PickerView()
+    AddActivityView()
+        .environment(ActivityStore())
 }

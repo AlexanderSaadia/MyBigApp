@@ -15,4 +15,5 @@ struct AIView: View {
 
 #Preview {
     PickerView()
+        .environment(ActivityStore())
 }
