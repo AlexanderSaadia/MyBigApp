@@ -1,20 +1,21 @@
-//
-//  ContentView.swift
-//  MyBigApp
-//
-//  Created by Alexander Saadia on 02/03/26.
-//
-
 import SwiftUI
 
 struct PickerView: View {
+    // MARK: - Stored properties
     
+    // tracks whether we are showing the detailed "Activities" list or the "Home" view dashboard
     @State private var showActivity = false
     
+    // tracks which tab is currently selected (1=Home, 2=Calendar, etc.)
+    @State private var selectedTab = 1
+    
+    // MARK: - Body
     var body: some View {
         NavigationStack {
-            TabView {
+            // TabView provides the bottom navigation bar
+            TabView(selection: $selectedTab) {
                 
+                // TAB 1: Home Dashboard or Activities List
                 Group {
                     if showActivity {
                         ActivitiesView()
@@ -24,30 +25,54 @@ struct PickerView: View {
                 }
                 .tabItem {
                     Image(systemName: "house.fill")
+                    Text("Home")
                 }
                 .tag(1)
                 
+                // TAB 2: The Multi-Mode Calendar
                 CalendarView()
-                    .tabItem { Image(systemName: "calendar") }
+                    .tabItem { 
+                        Image(systemName: "calendar") 
+                        Text("Calendar")
+                    }
                     .tag(2)
                 
+                // TAB 3: Add New Activity Form
                 AddActivityView()
-                    .tabItem { Image(systemName: "plus.circle.fill") }
+                    .tabItem { 
+                        Image(systemName: "plus.circle.fill") 
+                        Text("Add")
+                    }
                     .tag(3)
                 
+                // TAB 4: Personal Journal
                 JournalView()
-                    .tabItem { Image(systemName: "book.fill") }
+                    .tabItem { 
+                        Image(systemName: "book.fill") 
+                        Text("Journal")
+                    }
                     .tag(4)
                 
-                AIView()
-                    .tabItem { Image(systemName: "square.fill") }
+                // TAB 5: Stats & Playground
+                StatsView()
+                    .tabItem { 
+                        Image(systemName: "chart.bar.xaxis") 
+                        Text("Stats")
+                    }
                     .tag(5)
             }
+            // Title updates based on tab
+            .navigationTitle(selectedTab == 1 ? "Life League" : "")
             
+            // The toolbar is shared across the NavigationStack
             .toolbar {
+                // We only show the "Activities/Back" toggle if we are on the Home tab (tag 1)
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(showActivity ? "Back" : "Activities") {
-                        showActivity.toggle()
+                    if selectedTab == 1 {
+                        Button(showActivity ? "Back" : "Activities") {
+                            // Toggling this state causes the 'Group' in Tab 1 to switch views
+                            showActivity.toggle()
+                        }
                     }
                 }
             }

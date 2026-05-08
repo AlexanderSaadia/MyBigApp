@@ -1,12 +1,6 @@
-//
-//  CalendarView.swift
-//  MyBigApp
-//
-//  Created by Alexander Saadia on 02/03/26.
-//
-
 import SwiftUI
 
+// Defines the 4 different zoom levels for our calendar
 enum CalendarViewMode: String, CaseIterable {
     case daily = "Day"
     case weekly = "Week"
@@ -16,11 +10,19 @@ enum CalendarViewMode: String, CaseIterable {
 
 struct CalendarView: View {
     // MARK: - Stored properties
+    
+    // Grabs the shared data store from the app's environment
     @Environment(ActivityStore.self) private var activityStore
+    
+    // Tracks which mode (Day/Week/Month/Year) the user is currently looking at
     @State private var viewMode: CalendarViewMode = .monthly
+    
+    // The specific date being focused on in the calendar
     @State private var selectedDate: Date = Date()
     
     // MARK: - Computed properties
+    
+    // Dynamically generates the header title (e.g., "May 2026") based on the selected date
     private var titleForMode: String {
         switch viewMode {
         case .daily, .weekly, .monthly:
@@ -34,6 +36,7 @@ struct CalendarView: View {
     var body: some View {
         NavigationStack {
             VStack {
+                // Segmented picker allows user to switch between calendar modes
                 Picker("View Mode", selection: $viewMode) {
                     ForEach(CalendarViewMode.allCases, id: \.self) { mode in
                         Text(mode.rawValue).tag(mode)
@@ -42,6 +45,7 @@ struct CalendarView: View {
                 .pickerStyle(.segmented)
                 .padding()
                 
+                // Content area: Displays a different sub-view depending on the selected mode
                 Group {
                     switch viewMode {
                     case .daily:
@@ -58,6 +62,7 @@ struct CalendarView: View {
             }
             .navigationTitle(titleForMode)
             .toolbar {
+                // Toolbar buttons for jumping forward/backward in time
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack {
                         Button(action: { moveDate(by: -1) }) {
@@ -73,6 +78,8 @@ struct CalendarView: View {
     }
     
     // MARK: - Functions
+    
+    // Increments or decrements the selected date by one unit of the current view mode
     private func moveDate(by value: Int) {
         let calendar = Calendar.current
         switch viewMode {
@@ -89,14 +96,17 @@ struct CalendarView: View {
 }
 
 // MARK: - Daily View
+// Displays a detailed list of activities for a single day.
 struct DailyCalendarView: View {
     @Environment(ActivityStore.self) private var activityStore
     let date: Date
     
     var body: some View {
+        // Query the store for activities matching this specific date
         let activities = activityStore.activities(for: date)
         
         if activities.isEmpty {
+            // Empty state view
             VStack {
                 Spacer()
                 Image(systemName: "calendar.badge.exclamationmark")
@@ -107,6 +117,7 @@ struct DailyCalendarView: View {
                 Spacer()
             }
         } else {
+            // List view of the day's activities
             List {
                 ForEach(activities) { activity in
                     HStack {
@@ -122,15 +133,18 @@ struct DailyCalendarView: View {
 }
 
 // MARK: - Weekly View
+// Provides a row-by-row overview of the entire week.
 struct WeeklyCalendarView: View {
     @Environment(ActivityStore.self) private var activityStore
     let date: Date
     
     var body: some View {
+        // Get the 7 dates for the week
         let days = CalendarUtils.daysInWeek(for: date)
         
         ScrollView {
             VStack(spacing: 15) {
+                // Generate a row for each day of the week
                 ForEach(days, id: \.self) { day in
                     WeeklyDayRow(day: day)
                 }
@@ -140,6 +154,7 @@ struct WeeklyCalendarView: View {
     }
 }
 
+// Sub-component for a single day's row in the Weekly view
 struct WeeklyDayRow: View {
     @Environment(ActivityStore.self) private var activityStore
     let day: Date
@@ -157,6 +172,7 @@ struct WeeklyDayRow: View {
             }
             .padding(.horizontal)
             
+            // Check for activities on this specific day
             let activities = activityStore.activities(for: day)
             if activities.isEmpty {
                 Text("No activities")
@@ -164,6 +180,7 @@ struct WeeklyDayRow: View {
                     .foregroundColor(.gray)
                     .padding(.horizontal)
             } else {
+                // Horizontal scroll of icons representing activities
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
                         ForEach(activities) { activity in
@@ -190,17 +207,21 @@ struct WeeklyDayRow: View {
 }
 
 // MARK: - Monthly View
+// Displays a standard 7-column calendar grid.
 struct MonthlyCalendarView: View {
     @Environment(ActivityStore.self) private var activityStore
     @Binding var selectedDate: Date
     
+    // Grid configuration for 7 columns (one for each day of the week)
     private let columns = Array(repeating: GridItem(.flexible()), count: 7)
     
     var body: some View {
+        // Get all dates needed for the month's grid
         let days = CalendarUtils.daysInMonth(for: selectedDate)
         let weekdays = ["S", "M", "T", "W", "T", "F", "S"]
         
         VStack {
+            // Header for weekday labels
             HStack {
                 ForEach(weekdays, id: \.self) { day in
                     Text(day)
@@ -211,11 +232,13 @@ struct MonthlyCalendarView: View {
             }
             .padding(.horizontal)
             
+            // The actual calendar grid
             LazyVGrid(columns: columns, spacing: 15) {
                 ForEach(days, id: \.self) { day in
                     let isToday = Calendar.current.isDateInToday(day)
                     let isSelected = Calendar.current.isDate(day, inSameDayAs: selectedDate)
                     let activities = activityStore.activities(for: day)
+                    // Dim days that aren't part of the current month
                     let isOtherMonth = !Calendar.current.isDate(day, equalTo: selectedDate, toGranularity: .month)
                     
                     VStack {
@@ -226,6 +249,7 @@ struct MonthlyCalendarView: View {
                             .background(isSelected ? Color.blue : (isToday ? Color.blue.opacity(0.3) : Color.clear))
                             .clipShape(Circle())
                         
+                        // Small blue dot indicates that activities exist for this day
                         HStack(spacing: 2) {
                             if !activities.isEmpty {
                                 Circle()
@@ -236,6 +260,7 @@ struct MonthlyCalendarView: View {
                         .frame(height: 4)
                     }
                     .onTapGesture {
+                        // Updating selectedDate here causes the whole view to refresh
                         selectedDate = day
                     }
                 }
@@ -244,17 +269,19 @@ struct MonthlyCalendarView: View {
             
             Divider()
             
-            // Show activities for selected day
+            // Show detailed activity list for the day selected in the grid
             DailyCalendarView(date: selectedDate)
         }
     }
 }
 
 // MARK: - Yearly View
+// Provides a bird's eye view of all 12 months in the year.
 struct YearlyCalendarView: View {
     @Binding var selectedDate: Date
     @Binding var viewMode: CalendarViewMode
     
+    // 3 columns for months
     private let columns = Array(repeating: GridItem(.flexible()), count: 3)
     
     var body: some View {
@@ -267,6 +294,7 @@ struct YearlyCalendarView: View {
                         Text(CalendarUtils.monthName(from: month).prefix(3))
                             .font(.headline)
                         
+                        // Mini preview grid for the month
                         MiniMonthView(month: month)
                             .frame(height: 80)
                     }
@@ -274,6 +302,7 @@ struct YearlyCalendarView: View {
                     .background(Color.secondary.opacity(0.05))
                     .cornerRadius(10)
                     .onTapGesture {
+                        // Tapping a month zooms in to the Monthly view for that month
                         selectedDate = month
                         viewMode = .monthly
                     }
@@ -285,6 +314,7 @@ struct YearlyCalendarView: View {
 }
 
 // MARK: - Mini Month View for Yearly view
+// A simple non-interactive grid of dots to represent a month.
 struct MiniMonthView: View {
     let month: Date
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 2), count: 7)
@@ -296,6 +326,7 @@ struct MiniMonthView: View {
             ForEach(days, id: \.self) { day in
                 let isCurrentMonth = Calendar.current.isDate(day, equalTo: month, toGranularity: .month)
                 
+                // Dim dots for days that belong to next/previous months
                 Circle()
                     .fill(isCurrentMonth ? Color.blue.opacity(0.3) : Color.clear)
                     .frame(width: 4, height: 4)
@@ -303,7 +334,6 @@ struct MiniMonthView: View {
         }
     }
 }
-
 
 #Preview {
     PickerView()

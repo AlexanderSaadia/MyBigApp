@@ -1,14 +1,10 @@
-//
-//  HomeView.swift
-//  MyBigApp
-//
-//  Created by Alexander Saadia on 02/03/26.
-//
-
 import SwiftUI
 
+// This view shows a vertical list of every activity the user has ever added.
 struct ActivitiesView: View {
     // MARK: - Stored properties
+    
+    // Access the shared store so we can display the actual data
     @Environment(ActivityStore.self) private var activityStore
     
     // MARK: - Body
@@ -23,7 +19,9 @@ struct ActivitiesView: View {
             
             ScrollView {
                 VStack(spacing: 10) {
+                    // We iterate through every activity in our master store
                     ForEach(activityStore.activities) { activity in
+                        // Reusing the ActivityView sub-component for each row
                         ActivityView(activity: activity.name, 
                                      timesWeekly: "Added on " + activity.date.formatted(date: .abbreviated, time: .omitted), 
                                      percentage: "", 
@@ -36,7 +34,8 @@ struct ActivitiesView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
-                        // Back action handled by PickerView state
+                        // This button is decorative here as the back action 
+                        // is actually handled by 'showActivity' in PickerView.
                     } label: {
                         Image(systemName: "chevron.backward")
                     }
@@ -46,13 +45,7 @@ struct ActivitiesView: View {
     }
 }
 
-
-
-#Preview {
-    ActivitiesView()
-        .environment(ActivityStore())
-}
-
+// Sub-component that defines the look of a single activity row
 struct ActivityView: View {
     
     let activity: String
@@ -70,7 +63,6 @@ struct ActivityView: View {
                     
                     Image(systemName: symbol)
                         .font(.system(size: 25.0))
-
                     
                     VStack(alignment: .leading){
                         Text(activity)
@@ -85,6 +77,12 @@ struct ActivityView: View {
                 }
                 .padding(8)
             }
+            // Fix height so they don't grow too large
+            .frame(height: 80)
     }
 }
 
+#Preview {
+    ActivitiesView()
+        .environment(ActivityStore())
+}
