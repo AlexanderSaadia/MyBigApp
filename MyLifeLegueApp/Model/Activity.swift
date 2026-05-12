@@ -18,9 +18,17 @@ struct Activity: Identifiable, Codable {
     // How long the activity took (in minutes)
     var duration: Double = 0
     
-    // An estimate of effort or energy (optional but good for stats)
-    var calories: Int = 0
+    var effort: Int = 0
+    var distance: Double = 0
+    var fg: Int = 0
+    var threes: Int = 0
+    var rebounds: Int = 0
+    var assists: Int = 0
+    var steals: Int = 0
+    var blocks: Int = 0
+    var ft: Int = 0
+    var extra: String = ""
     
-    // A general score or "XP" earned (1-100)
-    var qualityScore: Int = 0
+    // Tracks if the activity was confirmed by the user
+    var isCompleted: Bool = false
 }

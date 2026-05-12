@@ -1,135 +1,145 @@
 import SwiftUI
 
-// This is the "Statistics Playground"
-// It calculates and displays summaries of all the data in our ActivityStore.
+// This is the main "Stats & Records" dashboard.
+// It shows high-level summaries and a list of all activities.
 struct StatsView: View {
-    // Access our shared data
     @Environment(ActivityStore.self) private var activityStore
+    @State private var timeRange: TimeRange = .weekly
     
-    // --- Computed Properties for Statistics ---
-    // In Computer Science, this is called "Data Aggregation"
-    
-    var totalActivities: Int {
-        return activityStore.activities.count
+    enum TimeRange: String, CaseIterable {
+        case weekly = "Weekly"
+        case monthly = "Monthly"
+        case yearly = "Yearly"
     }
     
-    var totalDurationMinutes: Int {
-        var total: Double = 0
+    // MARK: - Computed Properties for Filtered Stats
+    
+    private func filteredActivities() -> [Activity] {
+        let calendar = Calendar.current
+        let now = Date()
+        var result: [Activity] = []
+        
         for activity in activityStore.activities {
-            total += activity.duration
+            switch timeRange {
+            case .weekly:
+                if calendar.isDate(activity.date, equalTo: now, toGranularity: .weekOfYear) {
+                    result.append(activity)
+                }
+            case .monthly:
+                if calendar.isDate(activity.date, equalTo: now, toGranularity: .month) {
+                    result.append(activity)
+                }
+            case .yearly:
+                if calendar.isDate(activity.date, equalTo: now, toGranularity: .year) {
+                    result.append(activity)
+                }
+            }
         }
-        return Int(total)
+        return result
     }
     
-    var totalCalories: Int {
-        var total: Int = 0
-        for activity in activityStore.activities {
-            total += activity.calories
+    private var aggregateStats: (duration: Int, distance: Double, points: Int) {
+        let activities = filteredActivities()
+        var totalDuration: Double = 0
+        var totalDistance: Double = 0
+        var totalPoints: Int = 0
+        
+        for activity in activities {
+            totalDuration += activity.duration
+            totalDistance += activity.distance
+            // Points calculation: 2s (FG - 3s) * 2 + 3s * 3 + FT * 1
+            let twos = activity.fg - activity.threes
+            totalPoints += (twos * 2) + (activity.threes * 3) + activity.ft
         }
-        return total
+        
+        return (Int(totalDuration), totalDistance, totalPoints)
     }
-    
-    var averageQuality: Int {
-        if activityStore.activities.isEmpty { return 0 }
-        var total: Int = 0
-        for activity in activityStore.activities {
-            total += activity.qualityScore
-        }
-        return total / activityStore.activities.count
-    }
-    
+
     // MARK: - Body
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 20) {
-                    
-                    // HEADER CARD
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(LinearGradient(colors: [.blue, .purple], startPoint: .topLeading, endPoint: .bottomTrailing))
-                            .frame(height: 150)
+            List {
+                // SECTION 1: Time Range Picker & Summary
+                Section {
+                    VStack(spacing: 20) {
+                        Picker("Time Range", selection: $timeRange) {
+                            ForEach(TimeRange.allCases, id: \.self) { range in
+                                Text(range.rawValue).tag(range)
+                            }
+                        }
+                        .pickerStyle(.segmented)
                         
-                        VStack {
-                            Text("Your Lifetime Stats")
-                                .font(.headline)
-                                .foregroundColor(.white.opacity(0.8))
-                            
-                            Text("\(totalActivities)")
-                                .font(.system(size: 60, weight: .bold))
-                                .foregroundColor(.white)
-                            
-                            Text("Activities Completed")
-                                .font(.caption)
-                                .foregroundColor(.white.opacity(0.8))
+                        HStack(spacing: 15) {
+                            StatSummaryCard(title: "Time", value: "\(aggregateStats.duration)", unit: "m", color: .blue)
+                            StatSummaryCard(title: "Dist", value: String(format: "%.1f", aggregateStats.distance), unit: "km", color: .green)
+                            StatSummaryCard(title: "Pts", value: "\(aggregateStats.points)", unit: "tot", color: .orange)
                         }
                     }
-                    .padding(.horizontal)
-                    
-                    // STATS GRID
-                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
-                        StatCard(title: "Total Time", value: "\(totalDurationMinutes)", unit: "mins", color: .orange)
-                        StatCard(title: "Calories", value: "\(totalCalories)", unit: "kcal", color: .red)
-                        StatCard(title: "Avg. Effort", value: "\(averageQuality)", unit: "%", color: .green)
-                        StatCard(title: "Level", value: "\(totalActivities / 5 + 1)", unit: "Rank", color: .purple)
-                    }
-                    .padding(.horizontal)
-                    
-                    // INSIGHTS SECTION
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Weekly Insights")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                        
-                        Text("You've spent \(totalDurationMinutes / 60) hours and \(totalDurationMinutes % 60) minutes improving yourself this week!")
-                            .font(.body)
-                            .foregroundColor(.secondary)
-                    }
-                    .padding()
-                    .background(Color.secondary.opacity(0.1))
-                    .cornerRadius(15)
-                    .padding(.horizontal)
-                    
-                    Spacer()
+                    .padding(.vertical, 10)
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
                 }
-                .padding(.vertical)
+                
+                // SECTION 2: Activity List (History)
+                Section(header: Text("Activity Records")) {
+                    if activityStore.activities.isEmpty {
+                        Text("No activities recorded yet.")
+                            .foregroundColor(.secondary)
+                            .padding(.vertical)
+                    } else {
+                        ForEach(activityStore.activities.reversed()) { activity in
+                            NavigationLink(destination: ActivityDetailView(activity: activity)) {
+                                ActivityRecordRow(activity: activity)
+                                    .listRowInsets(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
+                                    .listRowSeparator(.hidden)
+                            }
+                            .buttonStyle(.plain)
+                            .listRowSeparator(.hidden)
+                            .listRowBackground(Color.clear)
+                        }
+                        .onDelete(perform: deleteItems)
+                    }
+                }
             }
-            .navigationTitle("Stats Playground")
+            .listStyle(.insetGrouped)
+            .navigationTitle("Stats & Records")
+        }
+    }
+    
+    private func deleteItems(at offsets: IndexSet) {
+        let reversedActivities = activityStore.activities.reversed()
+        for index in offsets {
+            let activityToDelete = Array(reversedActivities)[index]
+            activityStore.deleteActivity(activityToDelete)
         }
     }
 }
 
-// A reusable card component for individual stats
-struct StatCard: View {
+// MARK: - Sub-components
+
+struct StatSummaryCard: View {
     let title: String
     let value: String
     let unit: String
     let color: Color
     
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack {
             Text(title)
                 .font(.caption)
                 .foregroundColor(.secondary)
-            
-            HStack(alignment: .bottom, spacing: 4) {
-                Text(value)
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .foregroundColor(color)
-                Text(unit)
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
-            }
+            Text(value)
+                .font(.title2)
+                .fontWeight(.bold)
+                .foregroundColor(color)
+            Text(unit)
+                .font(.caption2)
+                .foregroundColor(.secondary)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
+        .frame(maxWidth: .infinity)
+        .padding(12)
         .background(color.opacity(0.1))
         .cornerRadius(12)
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(color.opacity(0.2), lineWidth: 1)
-        )
     }
 }
 

@@ -18,14 +18,22 @@ struct ActivitiesView: View {
             .padding(.horizontal)
             
             ScrollView {
-                VStack(spacing: 10) {
-                    // We iterate through every activity in our master store
-                    ForEach(activityStore.activities) { activity in
-                        // Reusing the ActivityView sub-component for each row
-                        ActivityView(activity: activity.name, 
-                                     timesWeekly: "Added on " + activity.date.formatted(date: .abbreviated, time: .omitted), 
-                                     percentage: "", 
-                                     symbol: activity.symbol)
+                VStack(spacing: 15) {
+                    // We show the latest activities first
+                    let reversedActivities = activityStore.activities.reversed()
+                    
+                    if activityStore.activities.isEmpty {
+                        Text("No activities recorded yet.")
+                            .foregroundColor(.secondary)
+                            .padding()
+                    } else {
+                        ForEach(Array(reversedActivities)) { activity in
+                            // Tapping an activity now takes you to the detailed "Cool Design" page
+                            NavigationLink(destination: ActivityDetailView(activity: activity)) {
+                                ActivityRecordRow(activity: activity)
+                            }
+                            .buttonStyle(.plain) // Keep the row looking clean
+                        }
                     }
                 }
                 .padding()
@@ -42,43 +50,6 @@ struct ActivitiesView: View {
                 }
             }
         }
-    }
-}
-
-// Sub-component that defines the look of a single activity row
-struct ActivityView: View {
-    
-    let activity: String
-    let timesWeekly: String
-    let percentage: String
-    let symbol: String
-    
-    var body: some View {
-        
-        Rectangle()
-            .fill(.gray)
-            .overlay {
-                
-                HStack {
-                    
-                    Image(systemName: symbol)
-                        .font(.system(size: 25.0))
-                    
-                    VStack(alignment: .leading){
-                        Text(activity)
-                            .font(.system(size: 25.0, weight: .semibold, design: .default))
-                        Text(timesWeekly)
-                    }
-                    
-                    Spacer()
-                    
-                    Text(percentage)
-                        .foregroundStyle(.green)
-                }
-                .padding(8)
-            }
-            // Fix height so they don't grow too large
-            .frame(height: 80)
     }
 }
 
