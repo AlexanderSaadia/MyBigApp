@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct MyBigAppApp: App {
+struct LifeLegueApp: App {
     @State private var activityStore = ActivityStore()
     
     var body: some Scene {
