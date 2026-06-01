@@ -54,6 +54,6 @@ struct ActivitiesView: View {
 }
 
 #Preview {
-    ActivitiesView()
+    PickerView()
         .environment(ActivityStore())
 }

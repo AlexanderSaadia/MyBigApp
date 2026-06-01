@@ -213,3 +213,8 @@ struct DetailStatBox: View {
         )
     }
 }
+
+#Preview {
+    PickerView()
+        .environment(ActivityStore())
+}

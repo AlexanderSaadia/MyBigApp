@@ -10,7 +10,6 @@ struct Activity: Identifiable, Codable {
     var name: String
     var date: Date
     var symbol: String
-    var notes: String = ""
     
     // --- STATISTICS FIELDS ---
     // We add these fields so we can "measure" our progress.

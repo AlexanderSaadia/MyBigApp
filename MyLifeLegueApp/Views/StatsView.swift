@@ -144,6 +144,6 @@ struct StatSummaryCard: View {
 }
 
 #Preview {
-    StatsView()
+    PickerView()
         .environment(ActivityStore())
 }
