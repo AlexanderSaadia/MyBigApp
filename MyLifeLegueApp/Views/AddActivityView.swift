@@ -78,26 +78,29 @@ struct AddActivityView: View {
                 Slider(value: Binding(get: { Double(effort) }, set: { effort = Int($0) }), in: 0...100)
             }
             
-            statCountersGrid
+            statCountersScroll
         }
     }
     
-    private var statCountersGrid: some View {
-        VStack(spacing: 15) {
-            HStack {
+    private var statCountersScroll: some View {
+        let rows = [
+            GridItem(.fixed(70)),
+            GridItem(.fixed(70))
+        ]
+        
+        return ScrollView(.horizontal, showsIndicators: false) {
+            LazyHGrid(rows: rows, spacing: 20) {
                 StatCounter(label: "FG", value: $fg, color: .orange)
                 StatCounter(label: "3s", value: $threes, color: .orange)
                 StatCounter(label: "FT", value: $ft, color: .orange)
-            }
-            
-            HStack {
                 StatCounter(label: "REB", value: $rebounds, color: .blue)
                 StatCounter(label: "AST", value: $assists, color: .blue)
                 StatCounter(label: "STL", value: $steals, color: .red)
                 StatCounter(label: "BLK", value: $blocks, color: .red)
             }
+            .padding(.vertical, 10)
+            .padding(.horizontal, 10)
         }
-        .padding(.vertical, 10)
     }
     
     private var extraNotesSection: some View {
@@ -206,7 +209,6 @@ struct StatCounter: View {
                     .controlSize(.small)
             }
         }
-        .frame(maxWidth: .infinity)
     }
 }
 
