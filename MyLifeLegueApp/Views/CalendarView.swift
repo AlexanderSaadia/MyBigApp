@@ -116,12 +116,14 @@ struct DayCell: View {
                 .background(isSelected ? Color.blue : (isToday ? Color.blue.opacity(0.3) : Color.clear))
                 .clipShape(Circle())
             
-            // Red spots for activities
+            // Dots for activities and goals
             HStack(spacing: 2 * scale) {
                 if !activities.isEmpty {
-                    ForEach(0..<min(activities.count, 3), id: \.self) { _ in
+                    ForEach(0..<min(activities.count, 3), id: \.self) { index in
+                        let activity = activities[index]
                         Circle()
-                            .fill(Color.red)
+                            // Explain: Goals are orange dots, activities are red dots
+                            .fill(activity.isGoal ? Color.orange : Color.red)
                             .frame(width: 4 * scale, height: 4 * scale)
                     }
                     if activities.count > 3 {
@@ -146,6 +148,11 @@ struct DailyCalendarView: View {
     @Environment(ActivityStore.self) private var activityStore
     let date: Date
     
+    // State for completion note
+    @State private var showNoteAlert = false
+    @State private var selectedActivity: Activity?
+    @State private var completionNote: String = ""
+    
     var body: some View {
         let activities = activityStore.activities(for: date)
         
@@ -163,12 +170,55 @@ struct DailyCalendarView: View {
             List {
                 ForEach(activities) { activity in
                     HStack {
-                        Image(systemName: activity.symbol)
-                            .foregroundColor(.blue)
-                        Text(activity.name)
+                        Image(systemName: activity.isGoal ? "target" : activity.symbol)
+                            .foregroundColor(activity.isGoal ? .orange : .blue)
+                        
+                        VStack(alignment: .leading) {
+                            Text(activity.name)
+                                .fontWeight(.semibold)
+                            if activity.isGoal {
+                                Text("Goal")
+                                    .font(.caption2)
+                                    .foregroundColor(.orange)
+                            }
+                        }
+                        
                         Spacer()
+                        
+                        if activity.isCompleted {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(.green)
+                        } else {
+                            Button(action: {
+                                // Explain: Trigger the note alert when completing from calendar
+                                selectedActivity = activity
+                                showNoteAlert = true
+                            }) {
+                                Text("Complete")
+                                    .font(.caption)
+                                    .fontWeight(.bold)
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 5)
+                                    .background(Color.blue)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(5)
+                            }
+                        }
                     }
+                    .padding(.vertical, 5)
                 }
+            }
+            .alert("Add Note", isPresented: $showNoteAlert) {
+                TextField("Write a little note...", text: $completionNote)
+                Button("Cancel", role: .cancel) { completionNote = "" }
+                Button("Confirm") {
+                    if let activity = selectedActivity {
+                        activityStore.completeActivity(activity, note: completionNote)
+                    }
+                    completionNote = ""
+                }
+            } message: {
+                Text("Would you like to add a note about this activity?")
             }
         }
     }
@@ -221,15 +271,15 @@ struct WeeklyDayRow: View {
                     HStack {
                         ForEach(activities) { activity in
                             VStack {
-                                Image(systemName: activity.symbol)
+                                Image(systemName: activity.isGoal ? "target" : activity.symbol)
                                     .font(.title2)
-                                    .foregroundColor(.blue)
+                                    .foregroundColor(activity.isGoal ? .orange : .blue)
                                 Text(activity.name)
                                     .font(.caption2)
                             }
                             .frame(width: 60)
                             .padding(8)
-                            .background(Color.blue.opacity(0.1))
+                            .background(activity.isGoal ? Color.orange.opacity(0.1) : Color.blue.opacity(0.1))
                             .cornerRadius(10)
                         }
                     }
@@ -277,6 +327,8 @@ struct YearlyCalendarView: View {
                         
                         MonthGridView(month: month, selectedDate: $selectedDate, onDayTapped: { day in
                             selectedDate = day
+                            viewMode = .daily // Note: This might need adjustment if daily2 was a typo in previous versions, but standard is .daily
+                            // Correcting to .daily for consistency
                             viewMode = .daily
                         })
                     }

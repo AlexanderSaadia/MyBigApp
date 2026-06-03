@@ -30,4 +30,11 @@ struct Activity: Identifiable, Codable {
     
     // Tracks if the activity was confirmed by the user
     var isCompleted: Bool = false
+    
+    // Tracks if this activity is a long-term goal
+    var isGoal: Bool = false
+    
+    // NEW: Optional note added when the user completes a goal
+    // Explain: Stores personal feedback or details about the goal's completion
+    var completionNote: String = ""
 }

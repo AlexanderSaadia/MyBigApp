@@ -1,59 +1,46 @@
 import SwiftUI
 
-// This view shows a vertical list of every activity the user has ever added.
 struct ActivitiesView: View {
-    // MARK: - Stored properties
-    
-    // Access the shared store so we can display the actual data
     @Environment(ActivityStore.self) private var activityStore
     
-    // MARK: - Body
     var body: some View {
-        VStack {
-            HStack {
-                Text ("Activities")
-                    .font(.system(size: 21.0, weight: .regular, design: .default))
-                Spacer()
-            }
-            .padding(.horizontal)
+        List {
+            let regularActivities = activityStore.activities.filter { !$0.isGoal }
             
-            ScrollView {
-                VStack(spacing: 15) {
-                    // We show the latest activities first
-                    let reversedActivities = activityStore.activities.reversed()
-                    
-                    if activityStore.activities.isEmpty {
-                        Text("No activities recorded yet.")
-                            .foregroundColor(.secondary)
-                            .padding()
-                    } else {
-                        ForEach(Array(reversedActivities)) { activity in
-                            // Tapping an activity now takes you to the detailed "Cool Design" page
-                            NavigationLink(destination: ActivityDetailView(activity: activity)) {
-                                ActivityRecordRow(activity: activity)
-                            }
-                            .buttonStyle(.plain) // Keep the row looking clean
+            if regularActivities.isEmpty {
+                Text("No activities logged yet.")
+                    .foregroundColor(.secondary)
+            } else {
+                ForEach(regularActivities.reversed()) { activity in
+                    HStack {
+                        Image(systemName: activity.symbol)
+                            .foregroundColor(.blue)
+                            .frame(width: 30)
+                        
+                        VStack(alignment: .leading) {
+                            Text(activity.name)
+                                .fontWeight(.semibold)
+                            Text(activity.date.formatted(date: .abbreviated, time: .shortened))
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                        }
+                        
+                        Spacer()
+                        
+                        if activity.isCompleted {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(.green)
                         }
                     }
-                }
-                .padding()
-            }
-            
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        // This button is decorative here as the back action 
-                        // is actually handled by 'showActivity' in PickerView.
-                    } label: {
-                        Image(systemName: "chevron.backward")
-                    }
+                    .padding(.vertical, 4)
                 }
             }
         }
+        .navigationTitle("Activities")
     }
 }
 
 #Preview {
-    PickerView()
+    ActivitiesView()
         .environment(ActivityStore())
 }

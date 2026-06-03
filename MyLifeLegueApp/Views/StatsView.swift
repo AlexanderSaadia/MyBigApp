@@ -6,6 +6,9 @@ struct StatsView: View {
     @Environment(ActivityStore.self) private var activityStore
     @State private var timeRange: TimeRange = .weekly
     
+    // Tracks if the Goal History side sheet is visible
+    @State private var showGoalHistory = false
+    
     enum TimeRange: String, CaseIterable {
         case weekly = "Weekly"
         case monthly = "Monthly"
@@ -20,6 +23,9 @@ struct StatsView: View {
         var result: [Activity] = []
         
         for activity in activityStore.activities {
+            // We only include regular activities in the main stats, not goals
+            if activity.isGoal { continue }
+            
             switch timeRange {
             case .weekly:
                 if calendar.isDate(activity.date, equalTo: now, toGranularity: .weekOfYear) {
@@ -33,6 +39,19 @@ struct StatsView: View {
                 if calendar.isDate(activity.date, equalTo: now, toGranularity: .year) {
                     result.append(activity)
                 }
+            }
+        }
+        return result
+    }
+    
+    // MARK: - Goal Helpers
+    
+    // Explain: Returns all goals that have been marked as completed
+    private func completedGoals() -> [Activity] {
+        var result: [Activity] = []
+        for activity in activityStore.activities {
+            if activity.isGoal && activity.isCompleted {
+                result.append(activity)
             }
         }
         return result
@@ -69,6 +88,20 @@ struct StatsView: View {
                         }
                         .pickerStyle(.segmented)
                         
+                        // Explain: Button to open the separate Goals History view
+                        Button(action: { showGoalHistory = true }) {
+                            HStack {
+                                Image(systemName: "clock.arrow.circlepath")
+                                Text("History Goals")
+                                    .fontWeight(.bold)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 10)
+                            .background(Color.yellow.opacity(0.2))
+                            .foregroundColor(.orange)
+                            .cornerRadius(10)
+                        }
+                        
                         HStack(spacing: 15) {
                             StatSummaryCard(title: "Time", value: "\(aggregateStats.duration)", unit: "m", color: .blue)
                             StatSummaryCard(title: "Dist", value: String(format: "%.1f", aggregateStats.distance), unit: "km", color: .green)
@@ -88,14 +121,17 @@ struct StatsView: View {
                             .padding(.vertical)
                     } else {
                         ForEach(activityStore.activities.reversed()) { activity in
-                            NavigationLink(destination: ActivityDetailView(activity: activity)) {
-                                ActivityRecordRow(activity: activity)
-                                    .listRowInsets(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
-                                    .listRowSeparator(.hidden)
+                            // We only show non-goals in the general activity records
+                            if !activity.isGoal {
+                                NavigationLink(destination: ActivityDetailView(activity: activity)) {
+                                    ActivityRecordRow(activity: activity)
+                                        .listRowInsets(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
+                                        .listRowSeparator(.hidden)
+                                }
+                                .buttonStyle(.plain)
+                                .listRowSeparator(.hidden)
+                                .listRowBackground(Color.clear)
                             }
-                            .buttonStyle(.plain)
-                            .listRowSeparator(.hidden)
-                            .listRowBackground(Color.clear)
                         }
                         .onDelete(perform: deleteItems)
                     }
@@ -103,6 +139,9 @@ struct StatsView: View {
             }
             .listStyle(.insetGrouped)
             .navigationTitle("Stats & Records")
+            .sheet(isPresented: $showGoalHistory) {
+                GoalHistoryView(goals: completedGoals())
+            }
         }
     }
     
@@ -111,6 +150,57 @@ struct StatsView: View {
         for index in offsets {
             let activityToDelete = Array(reversedActivities)[index]
             activityStore.deleteActivity(activityToDelete)
+        }
+    }
+}
+
+// MARK: - Goal History Side View
+// Explain: A dedicated view for browsing finished goals and their notes
+struct GoalHistoryView: View {
+    @Environment(\.dismiss) var dismiss
+    let goals: [Activity]
+    
+    var body: some View {
+        NavigationStack {
+            List {
+                if goals.isEmpty {
+                    Text("No goals completed yet.")
+                        .foregroundColor(.secondary)
+                        .padding()
+                } else {
+                    ForEach(goals.reversed()) { goal in
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                Image(systemName: "crown.fill")
+                                    .foregroundColor(.yellow)
+                                Text(goal.name)
+                                    .font(.headline)
+                                Spacer()
+                                Text(goal.date.formatted(date: .abbreviated, time: .shortened))
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
+                            }
+                            
+                            if !goal.completionNote.isEmpty {
+                                Text(goal.completionNote)
+                                    .font(.subheadline)
+                                    .italic()
+                                    .padding(8)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .background(Color.yellow.opacity(0.1))
+                                    .cornerRadius(8)
+                            }
+                        }
+                        .padding(.vertical, 4)
+                    }
+                }
+            }
+            .navigationTitle("Goal History")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") { dismiss() }
+                }
+            }
         }
     }
 }
@@ -144,6 +234,6 @@ struct StatSummaryCard: View {
 }
 
 #Preview {
-    PickerView()
+    StatsView()
         .environment(ActivityStore())
 }

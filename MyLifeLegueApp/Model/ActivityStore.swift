@@ -69,6 +69,18 @@ class ActivityStore {
         }
     }
     
+    // NEW: Completes an activity with an optional note
+    // Explain: Allows users to record a specific note when finishing a goal or task
+    func completeActivity(_ activity: Activity, note: String = "") {
+        for index in 0..<activities.count {
+            if activities[index].id == activity.id {
+                activities[index].isCompleted = true
+                activities[index].completionNote = note
+                break
+            }
+        }
+    }
+    
     // Removes an activity from our master list.
     func deleteActivity(_ activity: Activity) {
         var indexToRemove: Int?

@@ -3,8 +3,9 @@ import SwiftUI
 struct PickerView: View {
     // MARK: - Stored properties
     
-    // tracks whether we are showing the detailed "Activities" list or the "Home" view dashboard
-    @State private var showActivity = false
+    // tracks whether we are showing the detailed "Push-Ups" list or the "Home" view dashboard
+    // Explain: Replaced 'showActivity' logic with 'showPushUps' for the new primary alternate view
+    @State private var showPushUps = false
     
     // tracks which tab is currently selected (1=Home, 2=Calendar, etc.)
     @State private var selectedTab = 1
@@ -15,10 +16,11 @@ struct PickerView: View {
             // TabView provides the bottom navigation bar
             TabView(selection: $selectedTab) {
                 
-                // TAB 1: Home Dashboard or Activities List
+                // TAB 1: Home Dashboard or Push-Ups Timeline
+                // Explain: Completely replaced ActivitiesView with PushUpsView as requested
                 Group {
-                    if showActivity {
-                        ActivitiesView()
+                    if showPushUps {
+                        PushUpsView()
                     } else {
                         HomeView()
                     }
@@ -53,7 +55,7 @@ struct PickerView: View {
                     }
                     .tag(4)
                 
-                // TAB 5: Stats & Playground
+                // TAB 5: Stats & History
                 StatsView()
                     .tabItem { 
                         Image(systemName: "chart.bar.xaxis") 
@@ -66,12 +68,12 @@ struct PickerView: View {
             
             // The toolbar is shared across the NavigationStack
             .toolbar {
-                // We only show the "Activities/Back" toggle if we are on the Home tab (tag 1)
+                // We only show the "Push-Ups/Back" toggle if we are on the Home tab (tag 1)
                 ToolbarItem(placement: .topBarTrailing) {
                     if selectedTab == 1 {
-                        Button(showActivity ? "Back" : "Activities") {
+                        Button(showPushUps ? "Back" : "Push-Ups") {
                             // Toggling this state causes the 'Group' in Tab 1 to switch views
-                            showActivity.toggle()
+                            showPushUps.toggle()
                         }
                     }
                 }
