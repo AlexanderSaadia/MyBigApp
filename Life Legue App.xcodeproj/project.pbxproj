@@ -22,7 +22,6 @@
 		73F38FCF2FAE6C970000D876 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 73F38FCE2FAE6C970000D876 /* README.md */; };
 		73F38FD12FAE6FD00000D876 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F38FD02FAE6FD00000D876 /* StatsView.swift */; };
 		73F38FD32FB2ADCB0000D876 /* ActivityViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F38FD22FB2ADCB0000D876 /* ActivityViews.swift */; };
-		73F390242FCFA6CB0000D876 /* ActivitiesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F390232FCFA6CB0000D876 /* ActivitiesView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,7 +41,6 @@
 		73F38FCE2FAE6C970000D876 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		73F38FD02FAE6FD00000D876 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		73F38FD22FB2ADCB0000D876 /* ActivityViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityViews.swift; sourceTree = "<group>"; };
-		73F390232FCFA6CB0000D876 /* ActivitiesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivitiesView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,7 +104,6 @@
 				738E6FA92F5625AE00F44D22 /* JournalView.swift */,
 				73F38FD02FAE6FD00000D876 /* StatsView.swift */,
 				73F38FD22FB2ADCB0000D876 /* ActivityViews.swift */,
-				73F390232FCFA6CB0000D876 /* ActivitiesView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -189,7 +186,6 @@
 				73F38FCD2FAE68520000D876 /* CalendarUtils.swift in Sources */,
 				738E6FA42F5624C300F44D22 /* HomeView.swift in Sources */,
 				738E6F9F2F56169600F44D22 /* MainOrganization.swift in Sources */,
-				73F390242FCFA6CB0000D876 /* ActivitiesView.swift in Sources */,
 				73F38FD32FB2ADCB0000D876 /* ActivityViews.swift in Sources */,
 				73F38FC92FAE682E0000D876 /* Activity.swift in Sources */,
 				738E6FA62F56257B00F44D22 /* CalendarView.swift in Sources */,
