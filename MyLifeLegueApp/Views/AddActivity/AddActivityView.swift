@@ -1,9 +1,13 @@
 import SwiftUI
 import PhotosUI
 
+// MARK: - Add Activity View
+// This view provides a detailed form for creating and scheduling a new session.
 struct AddActivityView: View {
-    // MARK: - Stored properties
     
+    // MARK: - Environment & State
+    
+    // Access the shared data store.
     @Environment(ActivityStore.self) private var activityStore
     
     // Basic Information
@@ -12,7 +16,7 @@ struct AddActivityView: View {
     @State private var selectedSymbol: String = "basketball.fill"
     @State private var extra: String = ""
     
-    // Photo Selection
+    // Photo Selection State
     @State private var selectedItem: PhotosPickerItem?
     @State private var selectedImageData: Data?
     
@@ -20,7 +24,7 @@ struct AddActivityView: View {
     @State private var duration: Double = 60
     @State private var effort: Int = 50
     
-    // Basketball Specific Stats (Changed to String)
+    // Basketball Specific Stats
     @State private var fg: String = "0"
     @State private var threes: String = "0"
     @State private var ft: String = "0"
@@ -29,16 +33,23 @@ struct AddActivityView: View {
     @State private var steals: String = "0"
     @State private var blocks: String = "0"
     
+    // List of available icons the user can choose from.
     private let symbols = ["basketball.fill", "sportscourt.fill", "figure.basketball", "figure.basketball.fill", "trophy.fill"]
     
     // MARK: - Body
+    
     var body: some View {
         NavigationStack {
             Form {
+                // Section for name, date/time, and photo.
                 basicInfoSection
+                // Section for duration, effort, and basketball stats.
                 gameStatisticsSection
+                // Section for additional text notes.
                 extraNotesSection
+                // Section for choosing a visual representation icon.
                 symbolSelectionSection
+                // The final button to save the activity.
                 addActivityButton
             }
             .navigationTitle("Add Activity")
@@ -49,13 +60,17 @@ struct AddActivityView: View {
     
     private var basicInfoSection: some View {
         Section(header: Text("Basic Info")) {
+            // Input for the session name.
             TextField("Activity Name", text: $name)
+            // Date picker that supports selecting both the day and time.
             DatePicker("Date & Time", selection: $selectedDate, displayedComponents: [.date, .hourAndMinute])
             
+            // System photo picker to select an image from the library.
             PhotosPicker(selection: $selectedItem, matching: .images) {
                 HStack {
                     Label("Add Photo", systemImage: "photo")
                     Spacer()
+                    // Display a small preview of the photo if one is selected.
                     if let selectedImageData, let uiImage = UIImage(data: selectedImageData) {
                         Image(uiImage: uiImage)
                             .resizable()
@@ -65,6 +80,7 @@ struct AddActivityView: View {
                     }
                 }
             }
+            // Watch for changes in the picker selection and load the actual image data.
             .onChange(of: selectedItem) { _, newItem in
                 Task {
                     if let data = try? await newItem?.loadTransferable(type: Data.self) {
@@ -77,6 +93,7 @@ struct AddActivityView: View {
     
     private var gameStatisticsSection: some View {
         Section(header: Text("Game Statistics")) {
+            // Duration input with both a numeric field and a stepper (+/-).
             HStack {
                 Text("Duration (mins)")
                 Spacer()
@@ -88,6 +105,7 @@ struct AddActivityView: View {
                     .labelsHidden()
             }
             
+            // Effort level slider from 0% to 100%.
             VStack(alignment: .leading) {
                 HStack {
                     Text("Effort Level")
@@ -98,11 +116,13 @@ struct AddActivityView: View {
                 Slider(value: Binding(get: { Double(effort) }, set: { effort = Int($0) }), in: 0...100)
             }
             
+            // A horizontal scrolling list of specific basketball counters (FG, 3s, etc).
             statCountersScroll
         }
     }
     
     private var statCountersScroll: some View {
+        // Grid setup with 2 fixed rows.
         let rows = [
             GridItem(.fixed(70)),
             GridItem(.fixed(70))
@@ -110,6 +130,7 @@ struct AddActivityView: View {
         
         return ScrollView(.horizontal, showsIndicators: false) {
             LazyHGrid(rows: rows, spacing: 20) {
+                // Using our custom StatCounter component for each metric.
                 StatCounter(label: "FG", value: $fg, color: .orange)
                 StatCounter(label: "3s", value: $threes, color: .orange)
                 StatCounter(label: "FT", value: $ft, color: .orange)
@@ -125,6 +146,7 @@ struct AddActivityView: View {
     
     private var extraNotesSection: some View {
         Section(header: Text("Extra Notes")) {
+            // Multi-line text field for additional details.
             TextField("Enter details...", text: $extra, axis: .vertical)
                 .lineLimit(3...5)
         }
@@ -132,12 +154,14 @@ struct AddActivityView: View {
     
     private var symbolSelectionSection: some View {
         Section(header: Text("Symbol")) {
+            // Horizontal list of icons to tap and select.
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 20) {
                     ForEach(symbols, id: \.self) { symbol in
                         Image(systemName: symbol)
                             .font(.title)
                             .padding(10)
+                            // Highlight the background if this specific symbol is selected.
                             .background(selectedSymbol == symbol ? Color.accentColor.opacity(0.2) : Color.clear)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                             .onTapGesture { selectedSymbol = symbol }
@@ -153,6 +177,7 @@ struct AddActivityView: View {
             Text("Add Activity")
                 .frame(maxWidth: .infinity)
                 .padding()
+                // Button is gray and unclickable until a name is entered.
                 .background(name.isEmpty ? Color.gray : Color.blue)
                 .foregroundColor(.white)
                 .cornerRadius(10)
@@ -162,6 +187,7 @@ struct AddActivityView: View {
     
     // MARK: - Functions
     
+    // Collects all current state values, creates a new Activity object, and saves it.
     private func addActivity() {
         let newActivity = Activity(
             name: name, 
@@ -182,10 +208,13 @@ struct AddActivityView: View {
             imageData: selectedImageData
         )
         
+        // Push to the shared store.
         activityStore.addActivity(newActivity)
+        // Reset the form so the user can add another one.
         resetForm()
     }
     
+    // Resets all input variables back to their starting values.
     private func resetForm() {
         name = ""
         selectedDate = Date()
@@ -205,6 +234,7 @@ struct AddActivityView: View {
     }
 }
 
+// MARK: - Preview
 #Preview {
     AddActivityView()
         .environment(ActivityStore())

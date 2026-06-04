@@ -1,25 +1,35 @@
 import SwiftUI
 
+// MARK: - Main Tab View
+// This view acts as the root container for the app's primary navigation.
+// It sets up the bottom tab bar and switches between the main feature sections.
 struct PickerView: View {
-    // MARK: - Stored properties
     
-    // tracks which tab is currently selected (1=Home, 2=Calendar, etc.)
+    // MARK: - State Properties
+    
+    // This state variable tracks which tab is currently being viewed by the user.
+    // 1 = Home, 2 = Calendar, 3 = Add, 4 = Journal, 5 = Stats.
     @State private var selectedTab = 1
     
     // MARK: - Body
+    
     var body: some View {
-        // TabView provides the bottom navigation bar
+        // TabView is the standard SwiftUI component for a bottom navigation bar.
         TabView(selection: $selectedTab) {
             
             // TAB 1: Home Dashboard
+            // We wrap each main view in its own NavigationStack to fix the navigation title issue.
             HomeView()
                 .tabItem {
+                    // The icon shown in the tab bar.
                     Image(systemName: "house.fill")
+                    // The text label shown below the icon.
                     Text("Home")
                 }
+                // The tag identifies this specific tab for the $selectedTab binding.
                 .tag(1)
             
-            // TAB 2: The Multi-Mode Calendar
+            // TAB 2: Calendar Section
             CalendarView()
                 .tabItem { 
                     Image(systemName: "calendar") 
@@ -43,7 +53,7 @@ struct PickerView: View {
                 }
                 .tag(4)
             
-            // TAB 5: Stats & History
+            // TAB 5: Statistics & History
             StatsView()
                 .tabItem { 
                     Image(systemName: "chart.bar.xaxis") 
@@ -54,7 +64,9 @@ struct PickerView: View {
     }
 }
 
+// MARK: - Preview
 #Preview {
     PickerView()
+        // Provide a sample store for the preview to use.
         .environment(ActivityStore())
 }

@@ -1,19 +1,23 @@
 import SwiftUI
 import PhotosUI
 
+// MARK: - Complete Activity View
+// This view is shown when a user finishes a future activity.
+// It allows them to fill in the final results (stats, photos, notes) before saving.
 struct CompleteActivityView: View {
-    // MARK: - Stored properties
+    
+    // MARK: - Environment & State
     
     @Environment(ActivityStore.self) private var activityStore
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.dismiss) private var dismiss // Used to close the sheet.
     
-    let activity: Activity
+    let activity: Activity // The activity being completed.
     
-    // Performance Statistics
+    // PERFORMANCE STATISTICS
     @State private var duration: Double = 60
     @State private var effort: Int = 50
     
-    // Basketball Specific Stats (Changed to String)
+    // BASKETBALL SPECIFIC STATS
     @State private var fg: String = "0"
     @State private var threes: String = "0"
     @State private var ft: String = "0"
@@ -22,15 +26,18 @@ struct CompleteActivityView: View {
     @State private var steals: String = "0"
     @State private var blocks: String = "0"
     
-    // Notes & Photo
+    // NOTES & PHOTO
     @State private var completionNote: String = ""
     @State private var selectedItem: PhotosPickerItem?
     @State private var selectedImageData: Data?
     
     // MARK: - Initializer
+    
+    // The initializer pre-fills the form with any existing values from the activity.
     init(activity: Activity) {
         self.activity = activity
-        // Note: Initializing states with activity values if they exist
+        
+        // Initialize state variables using the activity's current data.
         _duration = State(initialValue: activity.duration > 0 ? activity.duration : 60)
         _effort = State(initialValue: activity.effort > 0 ? activity.effort : 50)
         _fg = State(initialValue: activity.fg)
@@ -45,9 +52,11 @@ struct CompleteActivityView: View {
     }
     
     // MARK: - Body
+    
     var body: some View {
         NavigationStack {
             Form {
+                // TOP SECTION: Confirms which session the user is completing.
                 Section(header: Text("Activity Summary")) {
                     HStack {
                         Image(systemName: activity.symbol)
@@ -61,8 +70,10 @@ struct CompleteActivityView: View {
                     }
                 }
                 
+                // STATISTICS SECTION: Allows editing of results before final save.
                 gameStatisticsSection
                 
+                // COMPLETION SECTION: Add final thoughts and an optional photo.
                 Section(header: Text("Completion Details")) {
                     TextField("Add a completion note...", text: $completionNote, axis: .vertical)
                         .lineLimit(3...5)
@@ -71,6 +82,7 @@ struct CompleteActivityView: View {
                         HStack {
                             Label("Add Photo", systemImage: "photo")
                             Spacer()
+                            // Show thumbnail of selected image.
                             if let selectedImageData, let uiImage = UIImage(data: selectedImageData) {
                                 Image(uiImage: uiImage)
                                     .resizable()
@@ -82,6 +94,7 @@ struct CompleteActivityView: View {
                     }
                     .onChange(of: selectedItem) { _, newItem in
                         Task {
+                            // Asynchronously load the selected image data.
                             if let data = try? await newItem?.loadTransferable(type: Data.self) {
                                 selectedImageData = data
                             }
@@ -89,10 +102,12 @@ struct CompleteActivityView: View {
                     }
                 }
                 
+                // The confirmation button to mark the session as finished.
                 completeButton
             }
             .navigationTitle("Complete Activity")
             .toolbar {
+                // Allow user to close the form without saving.
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") { dismiss() }
                 }
@@ -104,6 +119,7 @@ struct CompleteActivityView: View {
     
     private var gameStatisticsSection: some View {
         Section(header: Text("Game Statistics")) {
+            // Duration input.
             HStack {
                 Text("Duration (mins)")
                 Spacer()
@@ -115,6 +131,7 @@ struct CompleteActivityView: View {
                     .labelsHidden()
             }
             
+            // Effort level input.
             VStack(alignment: .leading) {
                 HStack {
                     Text("Effort Level")
@@ -125,6 +142,7 @@ struct CompleteActivityView: View {
                 Slider(value: Binding(get: { Double(effort) }, set: { effort = Int($0) }), in: 0...100)
             }
             
+            // Horizontal grid of the specific basketball counters.
             statCountersScroll
         }
     }
@@ -137,6 +155,7 @@ struct CompleteActivityView: View {
         
         return ScrollView(.horizontal, showsIndicators: false) {
             LazyHGrid(rows: rows, spacing: 20) {
+                // Link each counter to its corresponding state variable.
                 StatCounter(label: "FG", value: $fg, color: .orange)
                 StatCounter(label: "3s", value: $threes, color: .orange)
                 StatCounter(label: "FT", value: $ft, color: .orange)
@@ -163,6 +182,7 @@ struct CompleteActivityView: View {
     
     // MARK: - Functions
     
+    // Updates the activity in the store with all the new stats and closes the sheet.
     private func completeActivity() {
         activityStore.updateAndCompleteActivity(
             activity,
@@ -178,10 +198,12 @@ struct CompleteActivityView: View {
             note: completionNote,
             imageData: selectedImageData
         )
+        // Close the pop-up sheet.
         dismiss()
     }
 }
 
+// MARK: - Preview
 #Preview {
     CompleteActivityView(activity: Activity(name: "Test", date: Date(), symbol: "basketball.fill"))
         .environment(ActivityStore())

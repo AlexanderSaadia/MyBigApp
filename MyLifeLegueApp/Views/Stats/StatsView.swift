@@ -1,41 +1,52 @@
 import SwiftUI
 
-// This is the main "Stats & Records" dashboard.
-// It shows high-level summaries and a list of all activities.
+// MARK: - Stats & Records View
+// This view provides a high-level overview of practice data and goal history.
 struct StatsView: View {
+    
+    // MARK: - Environment & State
+    
+    // Access the shared activity data.
     @Environment(ActivityStore.self) private var activityStore
+    
+    // Tracks the current filter for the summary (Weekly, Monthly, Yearly).
     @State private var timeRange: TimeRange = .weekly
     
-    // Tracks if the Goal History side sheet is visible
+    // Controls the visibility of the "History Goals" pop-up sheet.
     @State private var showGoalHistory = false
     
+    // Defines the possible time filters for the dashboard.
     enum TimeRange: String, CaseIterable {
         case weekly = "Weekly"
         case monthly = "Monthly"
         case yearly = "Yearly"
     }
     
-    // MARK: - Computed Properties for Filtered Stats
+    // MARK: - Computed Properties
     
+    // Filters the master activity list based on the user's selected time range.
     private func filteredActivities() -> [Activity] {
         let calendar = Calendar.current
         let now = Date()
         var result: [Activity] = []
         
         for activity in activityStore.activities {
-            // We only include regular activities in the main stats, not goals
+            // We only include regular training sessions in these stats, not long-term goals.
             if activity.isGoal { continue }
             
             switch timeRange {
             case .weekly:
+                // Check if the session happened in the same week as right now.
                 if calendar.isDate(activity.date, equalTo: now, toGranularity: .weekOfYear) {
                     result.append(activity)
                 }
             case .monthly:
+                // Check if it happened in the same month.
                 if calendar.isDate(activity.date, equalTo: now, toGranularity: .month) {
                     result.append(activity)
                 }
             case .yearly:
+                // Check if it happened in the same year.
                 if calendar.isDate(activity.date, equalTo: now, toGranularity: .year) {
                     result.append(activity)
                 }
@@ -46,7 +57,7 @@ struct StatsView: View {
     
     // MARK: - Goal Helpers
     
-    // Explain: Returns all goals that have been marked as completed
+    // Returns a list of all long-term goals that have been marked as completed.
     private func completedGoals() -> [Activity] {
         var result: [Activity] = []
         for activity in activityStore.activities {
@@ -57,6 +68,7 @@ struct StatsView: View {
         return result
     }
     
+    // Calculates the totals for Time, Distance, and Basketball Points across the filtered list.
     private var aggregateStats: (duration: Int, distance: Double, points: Int) {
         let activities = filteredActivities()
         var totalDuration: Double = 0
@@ -67,7 +79,7 @@ struct StatsView: View {
             totalDuration += activity.duration
             totalDistance += activity.distance
             
-            // Points calculation using parsing helper
+            // Use our math helper to parse stats like "3/9" and add to the point total.
             totalPoints += calculatePoints(for: activity)
         }
         
@@ -75,12 +87,14 @@ struct StatsView: View {
     }
 
     // MARK: - Body
+    
     var body: some View {
         NavigationStack {
             List {
-                // SECTION 1: Time Range Picker & Summary
+                // SECTION 1: Summary Dashboard
                 Section {
                     VStack(spacing: 20) {
+                        // The segmented selector for Time Range.
                         Picker("Time Range", selection: $timeRange) {
                             ForEach(TimeRange.allCases, id: \.self) { range in
                                 Text(range.rawValue).tag(range)
@@ -88,7 +102,7 @@ struct StatsView: View {
                         }
                         .pickerStyle(.segmented)
                         
-                        // Explain: Button to open the separate Goals History view
+                        // Button to open the separate goal completion history.
                         Button(action: { showGoalHistory = true }) {
                             HStack {
                                 Image(systemName: "clock.arrow.circlepath")
@@ -102,6 +116,7 @@ struct StatsView: View {
                             .cornerRadius(10)
                         }
                         
+                        // Cards showing the calculated summary totals.
                         HStack(spacing: 15) {
                             StatSummaryCard(title: "Time", value: "\(aggregateStats.duration)", unit: "m", color: .blue)
                             StatSummaryCard(title: "Dist", value: String(format: "%.1f", aggregateStats.distance), unit: "km", color: .green)
@@ -113,16 +128,18 @@ struct StatsView: View {
                     .listRowBackground(Color.clear)
                 }
                 
-                // SECTION 2: Activity List (History)
+                // SECTION 2: Complete Activity History
                 Section(header: Text("Activity Records")) {
                     if activityStore.activities.isEmpty {
+                        // Empty state.
                         Text("No activities recorded yet.")
                             .foregroundColor(.secondary)
                             .padding(.vertical)
                     } else {
+                        // Display sessions in reverse order (newest at the top).
                         ForEach(activityStore.activities.reversed()) { activity in
-                            // We only show non-goals in the general activity records
                             if !activity.isGoal {
+                                // Tap an entry to see the full detail view.
                                 NavigationLink(destination: ActivityDetailView(activity: activity)) {
                                     ActivityRecordRow(activity: activity)
                                         .listRowInsets(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
@@ -133,18 +150,23 @@ struct StatsView: View {
                                 .listRowBackground(Color.clear)
                             }
                         }
+                        // Allow swiping to delete items from history.
                         .onDelete(perform: deleteItems)
                     }
                 }
             }
             .listStyle(.insetGrouped)
             .navigationTitle("Stats & Records")
+            // Show the Goal history when the state is toggled.
             .sheet(isPresented: $showGoalHistory) {
                 GoalHistoryView(goals: completedGoals())
             }
         }
     }
     
+    // MARK: - Functions
+    
+    // Deletes items from the store based on their index in the reversed list.
     private func deleteItems(at offsets: IndexSet) {
         let reversedActivities = activityStore.activities.reversed()
         for index in offsets {
@@ -154,10 +176,10 @@ struct StatsView: View {
     }
 }
 
-// MARK: - Goal History Side View
-// Explain: A dedicated view for browsing finished goals and their notes
+// MARK: - Goal History Sheet
+// A simplified view for reviewing archived/finished goals.
 struct GoalHistoryView: View {
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.dismiss) var dismiss // For the "Done" button.
     let goals: [Activity]
     
     var body: some View {
@@ -181,6 +203,7 @@ struct GoalHistoryView: View {
                                     .foregroundColor(.secondary)
                             }
                             
+                            // Show the completion note if one was added.
                             if !goal.completionNote.isEmpty {
                                 Text(goal.completionNote)
                                     .font(.subheadline)
@@ -205,8 +228,7 @@ struct GoalHistoryView: View {
     }
 }
 
-// MARK: - Sub-components
-
+// MARK: - Summary Card Component
 struct StatSummaryCard: View {
     let title: String
     let value: String
@@ -233,6 +255,7 @@ struct StatSummaryCard: View {
     }
 }
 
+// MARK: - Preview
 #Preview {
     StatsView()
         .environment(ActivityStore())

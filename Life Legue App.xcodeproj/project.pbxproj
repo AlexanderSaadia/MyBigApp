@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		736551D12FA1801700869F7B /* PushUpsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 736551D02FA1801700869F7B /* PushUpsView.swift */; };
-		738E6F9F2F56169600F44D22 /* MainOrganization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6F9C2F56169600F44D22 /* MainOrganization.swift */; };
-		738E6FA02F56169600F44D22 /* Life Legue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6F9D2F56169600F44D22 /* Life Legue.swift */; };
+		738E6F9F2F56169600F44D22 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6F9C2F56169600F44D22 /* MainTabView.swift */; };
+		738E6FA02F56169600F44D22 /* LifeLegueApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6F9D2F56169600F44D22 /* LifeLegueApp.swift */; };
 		738E6FA12F56169600F44D22 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 738E6F9B2F56169600F44D22 /* Assets.xcassets */; };
 		738E6FA42F5624C300F44D22 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6FA32F5624C300F44D22 /* HomeView.swift */; };
 		738E6FA62F56257B00F44D22 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6FA52F56257B00F44D22 /* CalendarView.swift */; };
@@ -23,14 +23,15 @@
 		73F38FD12FAE6FD00000D876 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F38FD02FAE6FD00000D876 /* StatsView.swift */; };
 		73F38FD32FB2ADCB0000D876 /* ActivityViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F38FD22FB2ADCB0000D876 /* ActivityViews.swift */; };
 		73F390262FD1D23D0000D876 /* CompleteActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F390252FD1D23D0000D876 /* CompleteActivityView.swift */; };
+		73F390332FD1DCBC0000D876 /* PushUpEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F390322FD1DCBC0000D876 /* PushUpEntry.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		736551D02FA1801700869F7B /* PushUpsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushUpsView.swift; sourceTree = "<group>"; };
 		738E6F8D2F56167900F44D22 /* Life Legue App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Life Legue App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		738E6F9B2F56169600F44D22 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		738E6F9C2F56169600F44D22 /* MainOrganization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainOrganization.swift; sourceTree = "<group>"; };
-		738E6F9D2F56169600F44D22 /* Life Legue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Life Legue.swift"; sourceTree = "<group>"; };
+		738E6F9C2F56169600F44D22 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		738E6F9D2F56169600F44D22 /* LifeLegueApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifeLegueApp.swift; sourceTree = "<group>"; };
 		738E6FA32F5624C300F44D22 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		738E6FA52F56257B00F44D22 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		738E6FA72F56259600F44D22 /* AddActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddActivityView.swift; sourceTree = "<group>"; };
@@ -43,6 +44,7 @@
 		73F38FD02FAE6FD00000D876 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		73F38FD22FB2ADCB0000D876 /* ActivityViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityViews.swift; sourceTree = "<group>"; };
 		73F390252FD1D23D0000D876 /* CompleteActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteActivityView.swift; sourceTree = "<group>"; };
+		73F390322FD1DCBC0000D876 /* PushUpEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushUpEntry.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,21 +58,11 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		736551D42FA183C800869F7B /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				738E6F9C2F56169600F44D22 /* MainOrganization.swift */,
-				73F38FC82FAE682E0000D876 /* Activity.swift */,
-				73F38FCA2FAE682E0000D876 /* ActivityStore.swift */,
-				73F38FCC2FAE68520000D876 /* CalendarUtils.swift */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
 		738E6F842F56167900F44D22 = {
 			isa = PBXGroup;
 			children = (
 				738E6F9E2F56169600F44D22 /* MyLifeLegueApp */,
+				738E6F9B2F56169600F44D22 /* Assets.xcassets */,
 				738E6F8E2F56167900F44D22 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -87,11 +79,11 @@
 			isa = PBXGroup;
 			children = (
 				73F38FCE2FAE6C970000D876 /* README.md */,
-				738E6F9D2F56169600F44D22 /* Life Legue.swift */,
-				736551D42FA183C800869F7B /* Model */,
 				738E6FA22F5616A500F44D22 /* Views */,
-				738E6F9B2F56169600F44D22 /* Assets.xcassets */,
-				738E6FAB2F5625CB00F44D22 /* AIView.swift */,
+				73F390272FD1DBFC0000D876 /* Models */,
+				73F390282FD1DBFC0000D876 /* ViewModels */,
+				73F390292FD1DBFC0000D876 /* Utilities */,
+				73F390312FD1DC020000D876 /* App */,
 			);
 			path = MyLifeLegueApp;
 			sourceTree = "<group>";
@@ -99,16 +91,107 @@
 		738E6FA22F5616A500F44D22 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				738E6FA32F5624C300F44D22 /* HomeView.swift */,
-				736551D02FA1801700869F7B /* PushUpsView.swift */,
-				738E6FA52F56257B00F44D22 /* CalendarView.swift */,
-				738E6FA72F56259600F44D22 /* AddActivityView.swift */,
-				738E6FA92F5625AE00F44D22 /* JournalView.swift */,
-				73F38FD02FAE6FD00000D876 /* StatsView.swift */,
-				73F38FD22FB2ADCB0000D876 /* ActivityViews.swift */,
-				73F390252FD1D23D0000D876 /* CompleteActivityView.swift */,
+				738E6F9C2F56169600F44D22 /* MainTabView.swift */,
+				73F3902A2FD1DBFC0000D876 /* Home */,
+				73F3902B2FD1DBFC0000D876 /* Calendar */,
+				73F3902C2FD1DBFC0000D876 /* Stats */,
+				73F3902D2FD1DBFC0000D876 /* AddActivity */,
+				73F3902E2FD1DBFC0000D876 /* PushUps */,
+				73F3902F2FD1DBFC0000D876 /* Journal */,
+				73F390302FD1DBFC0000D876 /* Components */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		73F390272FD1DBFC0000D876 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				73F38FC82FAE682E0000D876 /* Activity.swift */,
+				73F390322FD1DCBC0000D876 /* PushUpEntry.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		73F390282FD1DBFC0000D876 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				73F38FCA2FAE682E0000D876 /* ActivityStore.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		73F390292FD1DBFC0000D876 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				73F38FCC2FAE68520000D876 /* CalendarUtils.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		73F3902A2FD1DBFC0000D876 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				738E6FA32F5624C300F44D22 /* HomeView.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		73F3902B2FD1DBFC0000D876 /* Calendar */ = {
+			isa = PBXGroup;
+			children = (
+				738E6FA52F56257B00F44D22 /* CalendarView.swift */,
+			);
+			path = Calendar;
+			sourceTree = "<group>";
+		};
+		73F3902C2FD1DBFC0000D876 /* Stats */ = {
+			isa = PBXGroup;
+			children = (
+				73F38FD02FAE6FD00000D876 /* StatsView.swift */,
+			);
+			path = Stats;
+			sourceTree = "<group>";
+		};
+		73F3902D2FD1DBFC0000D876 /* AddActivity */ = {
+			isa = PBXGroup;
+			children = (
+				738E6FA72F56259600F44D22 /* AddActivityView.swift */,
+				73F390252FD1D23D0000D876 /* CompleteActivityView.swift */,
+			);
+			path = AddActivity;
+			sourceTree = "<group>";
+		};
+		73F3902E2FD1DBFC0000D876 /* PushUps */ = {
+			isa = PBXGroup;
+			children = (
+				736551D02FA1801700869F7B /* PushUpsView.swift */,
+			);
+			path = PushUps;
+			sourceTree = "<group>";
+		};
+		73F3902F2FD1DBFC0000D876 /* Journal */ = {
+			isa = PBXGroup;
+			children = (
+				738E6FA92F5625AE00F44D22 /* JournalView.swift */,
+			);
+			path = Journal;
+			sourceTree = "<group>";
+		};
+		73F390302FD1DBFC0000D876 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				73F38FD22FB2ADCB0000D876 /* ActivityViews.swift */,
+				738E6FAB2F5625CB00F44D22 /* AIView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		73F390312FD1DC020000D876 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				738E6F9D2F56169600F44D22 /* LifeLegueApp.swift */,
+			);
+			path = App;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -188,13 +271,14 @@
 				738E6FAA2F5625AE00F44D22 /* JournalView.swift in Sources */,
 				73F38FCD2FAE68520000D876 /* CalendarUtils.swift in Sources */,
 				738E6FA42F5624C300F44D22 /* HomeView.swift in Sources */,
-				738E6F9F2F56169600F44D22 /* MainOrganization.swift in Sources */,
+				738E6F9F2F56169600F44D22 /* MainTabView.swift in Sources */,
 				73F38FD32FB2ADCB0000D876 /* ActivityViews.swift in Sources */,
 				73F38FC92FAE682E0000D876 /* Activity.swift in Sources */,
 				738E6FA62F56257B00F44D22 /* CalendarView.swift in Sources */,
 				738E6FAC2F5625CB00F44D22 /* AIView.swift in Sources */,
 				73F38FD12FAE6FD00000D876 /* StatsView.swift in Sources */,
-				738E6FA02F56169600F44D22 /* Life Legue.swift in Sources */,
+				738E6FA02F56169600F44D22 /* LifeLegueApp.swift in Sources */,
+				73F390332FD1DCBC0000D876 /* PushUpEntry.swift in Sources */,
 				738E6FA82F56259600F44D22 /* AddActivityView.swift in Sources */,
 				73F390262FD1D23D0000D876 /* CompleteActivityView.swift in Sources */,
 				73F38FCB2FAE682E0000D876 /* ActivityStore.swift in Sources */,
