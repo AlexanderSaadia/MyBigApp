@@ -5,6 +5,7 @@
 // The view uses a central ActivityStore to persist the new activity.
 
 import SwiftUI
+import PhotosUI
 
 struct AddActivityView: View {
     // MARK: - Stored properties
@@ -16,6 +17,10 @@ struct AddActivityView: View {
     @State private var selectedDate: Date = Date()
     @State private var selectedSymbol: String = "basketball.fill"
     @State private var extra: String = ""
+    
+    // Photo Selection
+    @State private var selectedItem: PhotosPickerItem?
+    @State private var selectedImageData: Data?
     
     // Performance Statistics
     @State private var duration: Double = 60
@@ -51,7 +56,28 @@ struct AddActivityView: View {
     private var basicInfoSection: some View {
         Section(header: Text("Basic Info")) {
             TextField("Activity Name", text: $name)
-            DatePicker("Date", selection: $selectedDate, displayedComponents: [.date])
+            DatePicker("Date & Time", selection: $selectedDate, displayedComponents: [.date, .hourAndMinute])
+            
+            PhotosPicker(selection: $selectedItem, matching: .images) {
+                HStack {
+                    Label("Add Photo", systemImage: "photo")
+                    Spacer()
+                    if let selectedImageData, let uiImage = UIImage(data: selectedImageData) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 40, height: 40)
+                            .clipShape(RoundedRectangle(cornerRadius: 5))
+                    }
+                }
+            }
+            .onChange(of: selectedItem) { _, newItem in
+                Task {
+                    if let data = try? await newItem?.loadTransferable(type: Data.self) {
+                        selectedImageData = data
+                    }
+                }
+            }
         }
     }
     
@@ -158,7 +184,8 @@ struct AddActivityView: View {
             blocks: blocks,
             ft: ft,
             extra: extra,
-            isCompleted: false
+            isCompleted: false,
+            imageData: selectedImageData
         )
         
         activityStore.addActivity(newActivity)
@@ -167,6 +194,8 @@ struct AddActivityView: View {
     
     private func resetForm() {
         name = ""
+        selectedDate = Date()
+        selectedSymbol = "basketball.fill"
         duration = 60
         effort = 50
         fg = 0
@@ -177,6 +206,8 @@ struct AddActivityView: View {
         blocks = 0
         ft = 0
         extra = ""
+        selectedItem = nil
+        selectedImageData = nil
     }
 }
 

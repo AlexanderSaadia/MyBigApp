@@ -34,7 +34,9 @@ struct Activity: Identifiable, Codable {
     // Tracks if this activity is a long-term goal
     var isGoal: Bool = false
     
+    // NEW: Optional image data for activity
+    var imageData: Data? = nil
+    
     // NEW: Optional note added when the user completes a goal
-    // Explain: Stores personal feedback or details about the goal's completion
     var completionNote: String = ""
 }

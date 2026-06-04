@@ -7,6 +7,9 @@ struct HomeView: View {
     // Access the shared store so we can display real data
     @Environment(ActivityStore.self) private var activityStore
     
+    // tracks whether we are showing the detailed "Push-Ups" list or the "Home" view dashboard
+    @State private var showPushUps = false
+    
     // Tracks the selected segment in the goals area
     @State private var selection = 1
     
@@ -58,6 +61,26 @@ struct HomeView: View {
     
     // MARK: - Body
     var body: some View {
+        NavigationStack {
+            Group {
+                if showPushUps {
+                    PushUpsView()
+                } else {
+                    homeContent
+                }
+            }
+            .navigationTitle(showPushUps ? "Push-Ups" : "Life League")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(showPushUps ? "Back" : "Push-Ups") {
+                        showPushUps.toggle()
+                    }
+                }
+            }
+        }
+    }
+    
+    private var homeContent: some View {
         ScrollView { 
             VStack(spacing: 20) {
                 

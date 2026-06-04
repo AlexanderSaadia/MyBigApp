@@ -1,19 +1,27 @@
-//
-//  JournalView.swift
-//  MyBigApp
-//
-//  Created by Alexander Saadia on 02/03/26.
-//
-
 import SwiftUI
 
 struct JournalView: View {
     var body: some View {
-        Text("Journal")
+        NavigationStack {
+            VStack {
+                Text("Journal")
+                    .font(.largeTitle)
+                    .foregroundColor(.secondary)
+                
+                Image(systemName: "book.pages")
+                    .font(.system(size: 100))
+                    .foregroundColor(.blue.opacity(0.3))
+                    .padding()
+                
+                Text("Your personal reflection space.")
+                    .foregroundColor(.secondary)
+            }
+            .navigationTitle("Journal")
+        }
     }
 }
 
 #Preview {
-    PickerView()
+    JournalView()
         .environment(ActivityStore())
 }

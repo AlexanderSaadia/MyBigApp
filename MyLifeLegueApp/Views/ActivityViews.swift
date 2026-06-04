@@ -21,7 +21,7 @@ struct ActivityRecordRow: View {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(activity.name)
                             .font(.headline)
-                        Text(activity.date.formatted(date: .abbreviated, time: .omitted))
+                        Text(activity.date.formatted(date: .abbreviated, time: .shortened))
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -123,7 +123,7 @@ struct ActivityDetailView: View {
                     Text(activity.name)
                         .font(.largeTitle)
                         .fontWeight(.bold)
-                    Text(activity.date.formatted(date: .complete, time: .omitted))
+                    Text(activity.date.formatted(date: .complete, time: .shortened))
                         .foregroundColor(.secondary)
                     
                     if activity.isCompleted {
@@ -159,17 +159,54 @@ struct ActivityDetailView: View {
                 }
                 .padding(.horizontal)
                 
-                // EXTRA NOTES
-                if !activity.extra.isEmpty {
+                // EXTRA NOTES & COMPLETION NOTES
+                if !activity.extra.isEmpty || !activity.completionNote.isEmpty {
                     VStack(alignment: .leading, spacing: 10) {
-                        Text("Extra Notes")
+                        Text("Notes")
                             .font(.headline)
-                        Text(activity.extra)
-                            .font(.body)
+                        
+                        if !activity.extra.isEmpty {
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text("Activity Details:")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                Text(activity.extra)
+                                    .font(.body)
+                            }
                             .padding()
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background(Color.secondary.opacity(0.1))
                             .cornerRadius(12)
+                        }
+                        
+                        if !activity.completionNote.isEmpty {
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text("Completion Note:")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                Text(activity.completionNote)
+                                    .font(.body)
+                                    .italic()
+                            }
+                            .padding()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color.green.opacity(0.1))
+                            .cornerRadius(12)
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+                
+                // PHOTO
+                if let imageData = activity.imageData, let uiImage = UIImage(data: imageData) {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Photo")
+                            .font(.headline)
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFit()
+                            .cornerRadius(15)
+                            .frame(maxWidth: .infinity)
                     }
                     .padding(.horizontal)
                 }
