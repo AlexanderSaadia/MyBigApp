@@ -1,20 +1,24 @@
 import SwiftUI
+import SwiftData
 
 // MARK: - Push-Ups Tracking View
 // This view provides a specialized interface for logging push-up sets and visualizing them in a zigzag timeline.
 struct PushUpsView: View {
     
-    // MARK: - State Properties
+    // MARK: - Environment & State
+    
+    // Access the database context to save entries.
+    @Environment(\.modelContext) var modelContext
+    
+    // Query existing pushup history from SwiftData.
+    @Query(sort: \PushUpEntry.timestamp, order: .forward) var history: [PushUpEntry]
     
     // Tracks the user's text input for the current session.
     @State private var pushUpCount: String = ""
     
-    // Local list of push-up sessions.
-    @State private var history: [PushUpEntry] = []
-    
     // MARK: - Computed Properties
     
-    // Finds the highest number of push-ups ever logged to set the horizontal scale of the zigzag.
+    // Finds the highest number of push-ups ever logged to set the horizontal scale.
     private var maxCount: Int {
         var currentMax = 1
         for entry in history {
@@ -64,7 +68,6 @@ struct PushUpsView: View {
             // TIMELINE SECTION: The visual zigzag progress chart.
             ScrollView {
                 if history.isEmpty {
-                    // Empty state.
                     VStack(spacing: 10) {
                         Image(systemName: "figure.strengthtraining.functional")
                             .font(.system(size: 40))
@@ -74,14 +77,12 @@ struct PushUpsView: View {
                     }
                     .padding(.top, 50)
                 } else {
-                    // GeometryReader is used to calculate the available width for the zigzag.
                     GeometryReader { geometry in
-                        let width = geometry.size.width - 60 // Padding adjustment.
+                        let width = geometry.size.width - 60 
                         
                         VStack(alignment: .leading, spacing: 30) {
                             ForEach(0..<history.count, id: \.self) { index in
                                 let entry = history[index]
-                                // Pass the previous entry so we can draw a line between them.
                                 let previousEntry = index > 0 ? history[index-1] : nil
                                 
                                 TimelineRow(
@@ -94,7 +95,6 @@ struct PushUpsView: View {
                         }
                     }
                     .padding()
-                    // Set a minimum height for the ScrollView content so it is scrollable.
                     .frame(minHeight: CGFloat(history.count * 80))
                 }
             }
@@ -103,21 +103,23 @@ struct PushUpsView: View {
     
     // MARK: - Functions
     
-    // Converts the text input to an integer and saves it to history.
+    // Saves a new entry to the SwiftData database.
     private func logPushUps() {
         if let count = Int(pushUpCount) {
+            // Create a new model object.
             let newEntry = PushUpEntry(count: count, timestamp: Date())
-            history.append(newEntry)
+            // Insert it into the database context.
+            modelContext.insert(newEntry)
+            
             pushUpCount = ""
             
-            // Resign the keyboard after logging.
+            // Hide keyboard.
             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
         }
     }
 }
 
 // MARK: - Timeline Row Component
-// This component draws a single dot and its connecting line in the zigzag pattern.
 struct TimelineRow: View {
     let entry: PushUpEntry
     let previousEntry: PushUpEntry?
@@ -125,24 +127,19 @@ struct TimelineRow: View {
     let availableWidth: CGFloat
     
     var body: some View {
-        // Calculate horizontal position: (current / max) * width.
         let currentX = (CGFloat(entry.count) / CGFloat(maxCount)) * availableWidth
         
         VStack(alignment: .leading, spacing: 0) {
             ZStack(alignment: .leading) {
-                // DRAWING THE LINE: Connects the previous dot to the current dot.
                 if let previous = previousEntry {
                     let prevX = (CGFloat(previous.count) / CGFloat(maxCount)) * availableWidth
                     Path { path in
-                        // Start point (relative to this row).
                         path.move(to: CGPoint(x: prevX + 6, y: -15))
-                        // End point (at the center of the current dot).
                         path.addLine(to: CGPoint(x: currentX + 6, y: 15))
                     }
                     .stroke(Color.blue.opacity(0.3), lineWidth: 2)
                 }
                 
-                // THE DOT AND LABEL: The visual point representing the data.
                 HStack(alignment: .center, spacing: 10) {
                     Circle()
                         .fill(Color.blue)
@@ -167,14 +164,13 @@ struct TimelineRow: View {
                     .cornerRadius(8)
                     .shadow(color: .black.opacity(0.05), radius: 2)
                 }
-                // Physically move the dot to its calculated X position.
                 .offset(x: currentX)
             }
         }
     }
 }
 
-// MARK: - Preview
 #Preview {
     PushUpsView()
+        .modelContainer(for: PushUpEntry.self, inMemory: true)
 }

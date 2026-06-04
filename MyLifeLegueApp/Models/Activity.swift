@@ -1,19 +1,21 @@
 import Foundation
+import SwiftData
 
 // MARK: - Activity Model
 // This defines the structure of a single "Activity" in our app.
-// It conforms to Identifiable (so it can be used in Lists) and Codable (for potential saving/loading).
-struct Activity: Identifiable, Codable, Equatable {
-    // A unique identifier for every activity created, so SwiftUI knows which is which.
-    var id = UUID()
+// We added @Model so SwiftData can automatically save and load these objects.
+@Model
+final class Activity: Identifiable {
+    // A unique identifier for every activity created.
+    @Attribute(.unique) var id: UUID = UUID()
     
-    // The display name of the activity (e.g., "Morning Practice").
+    // The display name of the activity.
     var name: String
     
     // The date and time when the activity is scheduled or happened.
     var date: Date
     
-    // An SF Symbol name used to represent this activity visually (e.g., "basketball.fill").
+    // An SF Symbol name used to represent this activity visually.
     var symbol: String
     
     // --- STATISTICS FIELDS ---
@@ -27,39 +29,81 @@ struct Activity: Identifiable, Codable, Equatable {
     // The physical distance covered during the activity in kilometers.
     var distance: Double = 0
     
-    // Field Goals: Stored as a string to allow formats like "5/10" or just "5".
+    // Field Goals: Stored as a string to allow formats like "5/10".
     var fg: String = "0"
     
-    // Three-pointers: Stored as a string to allow fractional tracking.
+    // Three-pointers.
     var threes: String = "0"
     
-    // Rebounds grabbed during the session.
+    // Rebounds.
     var rebounds: String = "0"
     
-    // Assists made during the session.
+    // Assists.
     var assists: String = "0"
     
-    // Steals recorded during the session.
+    // Steals.
     var steals: String = "0"
     
-    // Blocks recorded during the session.
+    // Blocks.
     var blocks: String = "0"
     
-    // Free Throws: Stored as a string to allow fractional tracking.
+    // Free Throws.
     var ft: String = "0"
     
-    // Any extra text details or thoughts added when the activity was first created.
+    // Initial extra details.
     var extra: String = ""
     
-    // A boolean flag that tracks if the user has confirmed this activity as finished.
+    // Status flag.
     var isCompleted: Bool = false
     
-    // A boolean flag that marks this activity as a long-term goal rather than a single session.
+    // Goal flag.
     var isGoal: Bool = false
     
-    // Optional binary data for an image selected from the photo library.
-    var imageData: Data? = nil
+    // Binary data for a photo.
+    @Attribute(.externalStorage) var imageData: Data? = nil
     
-    // A separate note added specifically during the completion phase of an activity.
+    // Note added during completion.
     var completionNote: String = ""
+    
+    // MARK: - Initializer
+    // SwiftData models require an initializer that sets all properties.
+    init(
+        name: String,
+        date: Date,
+        symbol: String,
+        duration: Double = 0,
+        effort: Int = 0,
+        distance: Double = 0,
+        fg: String = "0",
+        threes: String = "0",
+        rebounds: String = "0",
+        assists: String = "0",
+        steals: String = "0",
+        blocks: String = "0",
+        ft: String = "0",
+        extra: String = "",
+        isCompleted: Bool = false,
+        isGoal: Bool = false,
+        imageData: Data? = nil,
+        completionNote: String = ""
+    ) {
+        self.name = name
+        self.date = date
+        self.symbol = symbol
+        self.duration = duration
+        self.effort = effort
+        self.distance = distance
+        self.fg = fg
+        self.threes = threes
+        self.rebounds = rebounds
+        self.assists = assists
+        self.steals = steals
+        self.blocks = blocks
+        self.ft = ft
+        self.extra = extra
+        self.isCompleted = isCompleted
+        self.isGoal = isGoal
+        self.imageData = imageData
+        self.completionNote = completionNote
+    }
 }

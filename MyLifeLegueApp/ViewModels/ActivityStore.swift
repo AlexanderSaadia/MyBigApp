@@ -1,85 +1,96 @@
 import Foundation
+import SwiftData
 import Observation
 
 // MARK: - ActivityStore ViewModel
 // This class manages the entire list of activities and goals for the application.
-// It uses the @Observable macro so that any SwiftUI view using it will update automatically.
+// We updated it to sync with SwiftData so data is saved permanently.
 @Observable
 class ActivityStore {
     
     // MARK: - Properties
     
-    // The master source of truth for all activities.
-    // Every time this array changes, SwiftUI will refresh the relevant views.
+    // The SwiftData context used for saving and deleting.
+    private var modelContext: ModelContext?
+    
+    // The master list of activities.
+    // In this version, we keep it as a normal array for the views to read,
+    // and we update it whenever the database changes.
     var activities: [Activity] = []
     
     // MARK: - Initializer
     
-    init() {
-        // We load sample data to ensure the app doesn't look empty on first launch.
-        self.activities = [
-            Activity(name: "Basketball Training", date: Date(), symbol: "basketball.fill", duration: 60, effort: 80, distance: 3.5, fg: "12/20", threes: "4/10", rebounds: "5", assists: "8", steals: "2", blocks: "1", ft: "5/6", extra: "Focused on shooting form", isCompleted: true),
-            Activity(name: "Game Day", date: Date(), symbol: "figure.basketball", duration: 40, effort: 95, distance: 4.2, fg: "15/30", threes: "2/8", rebounds: "10", assists: "5", steals: "3", blocks: "2", ft: "4/4", extra: "Double-double!", isCompleted: false)
-        ]
-        
-        // We clean up any uncompleted activities from past days to keep the list relevant.
-        cleanupOldUncompletedActivities()
+    init(modelContext: ModelContext? = nil) {
+        self.modelContext = modelContext
+        // If we have a context, fetch the existing data.
+        fetchActivities()
     }
     
     // MARK: - Methods
     
+    // Connects the store to the app's database.
+    func setContext(_ context: ModelContext) {
+        self.modelContext = context
+        fetchActivities()
+    }
+    
+    // Loads all activities from the SwiftData database into our local array.
+    private func fetchActivities() {
+        guard let context = modelContext else { return }
+        
+        // Create a request to get all Activities.
+        let descriptor = FetchDescriptor<Activity>(sortBy: [SortDescriptor(\.date)])
+        
+        do {
+            // Update our local array with data from the database.
+            self.activities = try context.fetch(descriptor)
+            
+            // Perform cleanup on the fetched data.
+            cleanupOldUncompletedActivities()
+        } catch {
+            print("Failed to fetch activities: \(error)")
+        }
+    }
+    
     // Removes activities that were planned for the past but never marked as completed.
     func cleanupOldUncompletedActivities() {
-        // Get the current calendar and today's start time (midnight).
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
         
-        // A temporary array to hold the activities we want to keep.
-        var keptActivities: [Activity] = []
         for activity in activities {
-            // Get the start of the day for the activity's date.
             let activityDate = calendar.startOfDay(for: activity.date)
             
-            // We keep the activity if it's for today/future, or if it was already finished.
-            if activityDate >= today || activity.isCompleted {
-                keptActivities.append(activity)
+            // If it's old and not finished, delete it from the database.
+            if activityDate < today && !activity.isCompleted {
+                deleteActivity(activity)
             }
         }
-        // Update the main list with our filtered results.
-        self.activities = keptActivities
     }
     
-    // Appends a new activity or goal to our central list.
+    // Saves a new activity to SwiftData.
     func addActivity(_ activity: Activity) {
-        activities.append(activity)
+        guard let context = modelContext else { return }
+        // Add to database.
+        context.insert(activity)
+        // Refresh our local list.
+        fetchActivities()
     }
     
     // Switches the completion status of a specific activity.
     func toggleCompletion(for activity: Activity) {
-        // Find the specific activity in our array by its unique ID.
-        for index in 0..<activities.count {
-            if activities[index].id == activity.id {
-                // Flip the boolean value (true to false, or false to true).
-                activities[index].isCompleted.toggle()
-                break
-            }
-        }
+        activity.isCompleted.toggle()
+        save()
     }
     
     // Marks an activity as finished with a note and optional photo data.
     func completeActivity(_ activity: Activity, note: String = "", imageData: Data? = nil) {
-        for index in 0..<activities.count {
-            if activities[index].id == activity.id {
-                // Set the completion state and store the provided note/image.
-                activities[index].isCompleted = true
-                activities[index].completionNote = note
-                activities[index].imageData = imageData
-                break
-            }
-        }
+        activity.isCompleted = true
+        activity.completionNote = note
+        activity.imageData = imageData
+        save()
     }
     
-    // A comprehensive update function that saves all statistics and marks the activity as done.
+    // Saves all statistics and marks the activity as done.
     func updateAndCompleteActivity(
         _ activity: Activity, 
         duration: Double, 
@@ -94,54 +105,43 @@ class ActivityStore {
         note: String, 
         imageData: Data?
     ) {
-        for index in 0..<activities.count {
-            if activities[index].id == activity.id {
-                // Apply all the new values from the completion form.
-                activities[index].isCompleted = true
-                activities[index].duration = duration
-                activities[index].effort = effort
-                activities[index].fg = fg
-                activities[index].threes = threes
-                activities[index].ft = ft
-                activities[index].rebounds = rebounds
-                activities[index].assists = assists
-                activities[index].steals = steals
-                activities[index].blocks = blocks
-                activities[index].completionNote = note
-                activities[index].imageData = imageData
-                break
-            }
-        }
+        activity.isCompleted = true
+        activity.duration = duration
+        activity.effort = effort
+        activity.fg = fg
+        activity.threes = threes
+        activity.ft = ft
+        activity.rebounds = rebounds
+        activity.assists = assists
+        activity.steals = steals
+        activity.blocks = blocks
+        activity.completionNote = note
+        activity.imageData = imageData
+        save()
     }
     
-    // Permanent deletion of an activity from the store.
+    // Permanent deletion from SwiftData.
     func deleteActivity(_ activity: Activity) {
-        // We find the index of the item that matches the ID.
-        var indexToRemove: Int?
-        for index in 0..<activities.count {
-            if activities[index].id == activity.id {
-                indexToRemove = index
-                break
-            }
-        }
-        
-        // If we found it, remove it from the array.
-        if let index = indexToRemove {
-            activities.remove(at: index)
-        }
+        guard let context = modelContext else { return }
+        context.delete(activity)
+        fetchActivities()
     }
     
-    // Returns a filtered list of activities that occur on the specified calendar day.
+    // Returns activities for a specific day.
     func activities(for date: Date) -> [Activity] {
         var result: [Activity] = []
         let calendar = Calendar.current
-        
         for activity in activities {
-            // Check if the activity date falls on the same day as the input date.
             if calendar.isDate(activity.date, inSameDayAs: date) {
                 result.append(activity)
             }
         }
         return result
+    }
+    
+    // Manual trigger to ensure the database writes to disk.
+    private func save() {
+        try? modelContext?.save()
+        fetchActivities()
     }
 }
