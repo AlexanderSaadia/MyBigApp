@@ -69,13 +69,48 @@ class ActivityStore {
         }
     }
     
-    // NEW: Completes an activity with an optional note
-    // Explain: Allows users to record a specific note when finishing a goal or task
-    func completeActivity(_ activity: Activity, note: String = "") {
+    // NEW: Completes an activity with an optional note and image
+    // Explain: Allows users to record a specific note and photo when finishing a goal or task
+    func completeActivity(_ activity: Activity, note: String = "", imageData: Data? = nil) {
         for index in 0..<activities.count {
             if activities[index].id == activity.id {
                 activities[index].isCompleted = true
                 activities[index].completionNote = note
+                activities[index].imageData = imageData
+                break
+            }
+        }
+    }
+    
+    // NEW: Completes an activity with all updated statistics
+    func updateAndCompleteActivity(
+        _ activity: Activity, 
+        duration: Double, 
+        effort: Int, 
+        fg: Int, 
+        threes: Int, 
+        ft: Int, 
+        rebounds: Int, 
+        assists: Int, 
+        steals: Int, 
+        blocks: Int, 
+        note: String, 
+        imageData: Data?
+    ) {
+        for index in 0..<activities.count {
+            if activities[index].id == activity.id {
+                activities[index].isCompleted = true
+                activities[index].duration = duration
+                activities[index].effort = effort
+                activities[index].fg = fg
+                activities[index].threes = threes
+                activities[index].ft = ft
+                activities[index].rebounds = rebounds
+                activities[index].assists = assists
+                activities[index].steals = steals
+                activities[index].blocks = blocks
+                activities[index].completionNote = note
+                activities[index].imageData = imageData
                 break
             }
         }

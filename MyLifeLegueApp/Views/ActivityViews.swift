@@ -251,6 +251,39 @@ struct DetailStatBox: View {
     }
 }
 
+// MARK: - Stat Counter
+// Custom view for stat counters that shows the number prominently
+struct StatCounter: View {
+    let label: String
+    @Binding var value: Int
+    let color: Color
+    
+    var body: some View {
+        VStack(spacing: 5) {
+            Text(label)
+                .font(.caption2)
+                .fontWeight(.bold)
+                .foregroundColor(.secondary)
+            
+            HStack(spacing: 5) {
+                TextField("", value: $value, format: .number)
+                    .keyboardType(.numberPad)
+                    .multilineTextAlignment(.center)
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .foregroundColor(color)
+                    .frame(width: 45, height: 45)
+                    .background(color.opacity(0.1))
+                    .clipShape(Circle())
+                
+                Stepper("", value: $value, in: 0...999)
+                    .labelsHidden()
+                    .controlSize(.small)
+            }
+        }
+    }
+}
+
 #Preview {
     PickerView()
         .environment(ActivityStore())

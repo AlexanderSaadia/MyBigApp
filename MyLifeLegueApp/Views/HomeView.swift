@@ -1,4 +1,5 @@
 import SwiftUI
+import PhotosUI
 
 // The main dashboard of the application
 struct HomeView: View {
@@ -17,12 +18,28 @@ struct HomeView: View {
     @State private var newGoalName: String = ""
     @State private var goalTargetDate: Date = Date()
     
-    // State for completion note alert
+    // State for completion flow
     @State private var showNoteAlert = false
+    @State private var showPhotoDialog = false
+    @State private var showPhotoPicker = false
+    @State private var showCompletionSheet = false
     @State private var selectedActivity: Activity?
     @State private var completionNote: String = ""
+    @State private var selectedItem: PhotosPickerItem?
+    @State private var selectedImageData: Data?
     
     // MARK: - Functions
+    
+    private func handleConfirm(for activity: Activity) {
+        selectedActivity = activity
+        if activity.date > Date() {
+            // Future activity: show the detailed completion sheet
+            showCompletionSheet = true
+        } else {
+            // Past activity: complete automatically
+            activityStore.completeActivity(activity)
+        }
+    }
     
     // Filters the master list to show only goals that are not yet finished
     func activeGoals() -> [Activity] {
@@ -147,8 +164,7 @@ struct HomeView: View {
                     } else {
                         ForEach(todaysItems) { activity in
                             MainActivityView(activity: activity) {
-                                selectedActivity = activity
-                                showNoteAlert = true
+                                handleConfirm(for: activity)
                             }
                         }
                     }
@@ -228,9 +244,7 @@ struct HomeView: View {
                                 Spacer()
                                 
                                 Button(action: {
-                                    // Explain: Trigger the note alert when completing a goal
-                                    selectedActivity = goal
-                                    showNoteAlert = true
+                                    handleConfirm(for: goal)
                                 }) {
                                     Image(systemName: "circle")
                                         .font(.title2)
@@ -247,18 +261,51 @@ struct HomeView: View {
             }
             .padding(.vertical)
         }
+        .sheet(isPresented: $showCompletionSheet) {
+            if let activity = selectedActivity {
+                CompleteActivityView(activity: activity)
+            }
+        }
         .alert("Complete Goal", isPresented: $showNoteAlert) {
             TextField("Write a little note...", text: $completionNote)
             Button("Cancel", role: .cancel) { completionNote = "" }
             Button("Confirm") {
-                if let activity = selectedActivity {
-                    activityStore.completeActivity(activity, note: completionNote)
-                }
-                completionNote = ""
+                // After note is confirmed, ask for a photo
+                showPhotoDialog = true
             }
         } message: {
             Text("Would you like to add a note to this achievement?")
         }
+        .confirmationDialog("Add a Photo?", isPresented: $showPhotoDialog, titleVisibility: .visible) {
+            Button("Choose from Library") {
+                showPhotoPicker = true
+            }
+            Button("No Thanks", role: .cancel) {
+                finishCompletion()
+            }
+        } message: {
+            Text("Would you like to add a photo from your library to this activity?")
+        }
+        .photosPicker(isPresented: $showPhotoPicker, selection: $selectedItem, matching: .images)
+        .onChange(of: selectedItem) { _, newItem in
+            Task {
+                if let data = try? await newItem?.loadTransferable(type: Data.self) {
+                    selectedImageData = data
+                    finishCompletion()
+                }
+            }
+        }
+    }
+    
+    private func finishCompletion() {
+        if let activity = selectedActivity {
+            activityStore.completeActivity(activity, note: completionNote, imageData: selectedImageData)
+        }
+        // Reset state
+        completionNote = ""
+        selectedImageData = nil
+        selectedItem = nil
+        selectedActivity = nil
     }
 }
 

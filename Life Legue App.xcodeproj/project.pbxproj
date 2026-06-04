@@ -22,6 +22,7 @@
 		73F38FCF2FAE6C970000D876 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 73F38FCE2FAE6C970000D876 /* README.md */; };
 		73F38FD12FAE6FD00000D876 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F38FD02FAE6FD00000D876 /* StatsView.swift */; };
 		73F38FD32FB2ADCB0000D876 /* ActivityViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F38FD22FB2ADCB0000D876 /* ActivityViews.swift */; };
+		73F390262FD1D23D0000D876 /* CompleteActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F390252FD1D23D0000D876 /* CompleteActivityView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +42,7 @@
 		73F38FCE2FAE6C970000D876 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		73F38FD02FAE6FD00000D876 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		73F38FD22FB2ADCB0000D876 /* ActivityViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityViews.swift; sourceTree = "<group>"; };
+		73F390252FD1D23D0000D876 /* CompleteActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteActivityView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +106,7 @@
 				738E6FA92F5625AE00F44D22 /* JournalView.swift */,
 				73F38FD02FAE6FD00000D876 /* StatsView.swift */,
 				73F38FD22FB2ADCB0000D876 /* ActivityViews.swift */,
+				73F390252FD1D23D0000D876 /* CompleteActivityView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -193,6 +196,7 @@
 				73F38FD12FAE6FD00000D876 /* StatsView.swift in Sources */,
 				738E6FA02F56169600F44D22 /* Life Legue.swift in Sources */,
 				738E6FA82F56259600F44D22 /* AddActivityView.swift in Sources */,
+				73F390262FD1D23D0000D876 /* CompleteActivityView.swift in Sources */,
 				73F38FCB2FAE682E0000D876 /* ActivityStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
