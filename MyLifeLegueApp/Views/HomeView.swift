@@ -19,24 +19,20 @@ struct HomeView: View {
     @State private var goalTargetDate: Date = Date()
     
     // State for completion flow
-    @State private var showNoteAlert = false
-    @State private var showPhotoDialog = false
-    @State private var showPhotoPicker = false
-    @State private var showCompletionSheet = false
     @State private var selectedActivity: Activity?
-    @State private var completionNote: String = ""
-    @State private var selectedItem: PhotosPickerItem?
-    @State private var selectedImageData: Data?
     
     // MARK: - Functions
     
     private func handleConfirm(for activity: Activity) {
-        selectedActivity = activity
-        if activity.date > Date() {
-            // Future activity: show the detailed completion sheet
-            showCompletionSheet = true
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        let activityDate = calendar.startOfDay(for: activity.date)
+        
+        if activityDate >= today {
+            // Activity is today or in the future: show the detailed completion sheet
+            selectedActivity = activity
         } else {
-            // Past activity: complete automatically
+            // Activity is from a past day: complete automatically (no stats needed)
             activityStore.completeActivity(activity)
         }
     }
@@ -45,7 +41,6 @@ struct HomeView: View {
     func activeGoals() -> [Activity] {
         var result: [Activity] = []
         for activity in activityStore.activities {
-            // We only include it if it's marked as a goal and is not completed
             if activity.isGoal && !activity.isCompleted {
                 result.append(activity)
             }
@@ -94,6 +89,10 @@ struct HomeView: View {
                     }
                 }
             }
+            // Use .sheet(item:) for cleaner state management and automatic reset
+            .sheet(item: $selectedActivity) { activity in
+                CompleteActivityView(activity: activity)
+            }
         }
     }
     
@@ -102,33 +101,27 @@ struct HomeView: View {
             VStack(spacing: 20) {
                 
                 // USER PROFILE SECTION
-                // Displays the user's avatar and name at the top
                 HStack {
                     Circle()
                         .fill(Color.secondary.opacity(0.2) )
                         .frame(width: 50, height: 50)
-                    
                     Text("Alexander Saadia")
                         .font(.headline)
-                    
                     Spacer()
                 }
                 .padding(.horizontal)
                 
                 // DASHBOARD STATS SECTION
-                // A visual summary of the user's progress
                 ZStack {
                     RoundedRectangle(cornerRadius: 15)
                         .fill(Color.blue)
                         .frame(height: 160)
-                    
                     VStack {
                         HStack {
                             Text("Activities Completed")
                                 .fontWeight(.bold)
                         }
                         Spacer()
-                        // Placeholder for a progress chart
                         Circle()
                             .stroke(Color.white.opacity(0.3), lineWidth: 8)
                             .frame(width: 60, height: 60)
@@ -145,14 +138,12 @@ struct HomeView: View {
                 .padding(.horizontal)
                 
                 // TODAY'S TASKS SECTION
-                // A quick-look list of what needs to be done today
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Today's Activities")
                         .font(.title3)
                         .fontWeight(.bold)
                     
                     let todaysItems = todayActivities()
-                    
                     if todaysItems.isEmpty {
                         Text("No activities added for today yet.")
                             .font(.caption)
@@ -172,23 +163,18 @@ struct HomeView: View {
                 .padding(.horizontal)
                 
                 // GOALS TRACKING SECTION
-                // Allows users to track long-term targets
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Active Goals")
                         .font(.title3)
                         .fontWeight(.bold)
                     
-                    // INPUT SECTION: For creating a new goal (RESIZED & RESTYLED)
-                    // Explain: This section is now smaller, colored golden, and includes time selection
                     VStack(spacing: 8) {
                         HStack(spacing: 8) {
                             TextField("Goal name...", text: $newGoalName)
                                 .padding(10)
                                 .background(Color.white)
                                 .cornerRadius(8)
-                            
                             Button(action: {
-                                // Add the new goal to the store
                                 let newGoal = Activity(
                                     name: newGoalName,
                                     date: goalTargetDate,
@@ -196,28 +182,23 @@ struct HomeView: View {
                                     isGoal: true
                                 )
                                 activityStore.addActivity(newGoal)
-                                
-                                // Reset fields
                                 newGoalName = ""
                                 goalTargetDate = Date()
                             }) {
-                                // Explain: "Add" button placed to the far right of the text field
                                 Image(systemName: "plus.circle.fill")
                                     .font(.title2)
                                     .foregroundColor(.orange)
                             }
                             .disabled(newGoalName.isEmpty)
                         }
-                        
                         DatePicker("Target Time:", selection: $goalTargetDate, displayedComponents: [.date, .hourAndMinute])
                             .font(.caption)
                             .fontWeight(.medium)
                     }
                     .padding(12)
-                    .background(Color.yellow.opacity(0.2)) // Golden color background
+                    .background(Color.yellow.opacity(0.2))
                     .cornerRadius(12)
                     
-                    // LIST SECTION: Shows all current goals
                     let goals = activeGoals()
                     if goals.isEmpty {
                         Text("No active goals.")
@@ -232,7 +213,6 @@ struct HomeView: View {
                             HStack {
                                 Image(systemName: "target")
                                     .foregroundColor(.orange)
-                                
                                 VStack(alignment: .leading) {
                                     Text(goal.name)
                                         .fontWeight(.semibold)
@@ -240,9 +220,7 @@ struct HomeView: View {
                                         .font(.caption2)
                                         .foregroundColor(.secondary)
                                 }
-                                
                                 Spacer()
-                                
                                 Button(action: {
                                     handleConfirm(for: goal)
                                 }) {
@@ -261,51 +239,6 @@ struct HomeView: View {
             }
             .padding(.vertical)
         }
-        .sheet(isPresented: $showCompletionSheet) {
-            if let activity = selectedActivity {
-                CompleteActivityView(activity: activity)
-            }
-        }
-        .alert("Complete Goal", isPresented: $showNoteAlert) {
-            TextField("Write a little note...", text: $completionNote)
-            Button("Cancel", role: .cancel) { completionNote = "" }
-            Button("Confirm") {
-                // After note is confirmed, ask for a photo
-                showPhotoDialog = true
-            }
-        } message: {
-            Text("Would you like to add a note to this achievement?")
-        }
-        .confirmationDialog("Add a Photo?", isPresented: $showPhotoDialog, titleVisibility: .visible) {
-            Button("Choose from Library") {
-                showPhotoPicker = true
-            }
-            Button("No Thanks", role: .cancel) {
-                finishCompletion()
-            }
-        } message: {
-            Text("Would you like to add a photo from your library to this activity?")
-        }
-        .photosPicker(isPresented: $showPhotoPicker, selection: $selectedItem, matching: .images)
-        .onChange(of: selectedItem) { _, newItem in
-            Task {
-                if let data = try? await newItem?.loadTransferable(type: Data.self) {
-                    selectedImageData = data
-                    finishCompletion()
-                }
-            }
-        }
-    }
-    
-    private func finishCompletion() {
-        if let activity = selectedActivity {
-            activityStore.completeActivity(activity, note: completionNote, imageData: selectedImageData)
-        }
-        // Reset state
-        completionNote = ""
-        selectedImageData = nil
-        selectedItem = nil
-        selectedActivity = nil
     }
 }
 
@@ -330,9 +263,7 @@ struct MainActivityView: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
-            
             Spacer()
-            
             if activity.isCompleted {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundStyle(.green)

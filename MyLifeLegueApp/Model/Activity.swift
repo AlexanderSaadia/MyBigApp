@@ -2,7 +2,7 @@ import Foundation
 
 // The Activity struct is our "Data Model". 
 // It defines what a single activity is and what information it must contain.
-struct Activity: Identifiable, Codable {
+struct Activity: Identifiable, Codable, Equatable {
     // Identifiable: Allows SwiftUI to distinguish between different activities.
     var id = UUID()
     

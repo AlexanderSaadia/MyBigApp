@@ -15,8 +15,18 @@ struct PushUpsView: View {
     @State private var pushUpCount: String = ""
     
     // The list of all push-up sessions
-    // In a full app, this would be moved to ActivityStore for persistence
     @State private var history: [PushUpEntry] = []
+    
+    // MARK: - Computed properties
+    private var maxCount: Int {
+        var currentMax = 1
+        for entry in history {
+            if entry.count > currentMax {
+                currentMax = entry.count
+            }
+        }
+        return currentMax
+    }
     
     // MARK: - Body
     var body: some View {
@@ -54,7 +64,6 @@ struct PushUpsView: View {
             Divider()
             
             // TIMELINE SECTION
-            // Explain: Displays push-up history in a vertical timeline format
             ScrollView {
                 if history.isEmpty {
                     VStack(spacing: 10) {
@@ -66,21 +75,32 @@ struct PushUpsView: View {
                     }
                     .padding(.top, 50)
                 } else {
-                    VStack(alignment: .leading, spacing: 0) {
-                        ForEach(history.reversed()) { entry in
-                            TimelineRow(entry: entry, isLast: entry.id == history.first?.id)
+                    GeometryReader { geometry in
+                        let width = geometry.size.width - 60 // Adjust for padding
+                        
+                        VStack(alignment: .leading, spacing: 30) {
+                            ForEach(0..<history.count, id: \.self) { index in
+                                let entry = history[index]
+                                let previousEntry = index > 0 ? history[index-1] : nil
+                                
+                                TimelineRow(
+                                    entry: entry, 
+                                    previousEntry: previousEntry,
+                                    maxCount: maxCount,
+                                    availableWidth: width
+                                )
+                            }
                         }
                     }
                     .padding()
+                    .frame(minHeight: CGFloat(history.count * 80))
                 }
             }
         }
-        // Explain: Title is now managed by the parent NavigationStack in PickerView
     }
     
     // MARK: - Functions
     
-    // Explain: Saves the new push-up count and clears the input
     private func logPushUps() {
         if let count = Int(pushUpCount) {
             let newEntry = PushUpEntry(count: count, timestamp: Date())
@@ -96,41 +116,51 @@ struct PushUpsView: View {
 // MARK: - Timeline Sub-component
 struct TimelineRow: View {
     let entry: PushUpEntry
-    let isLast: Bool
+    let previousEntry: PushUpEntry?
+    let maxCount: Int
+    let availableWidth: CGFloat
     
     var body: some View {
-        HStack(alignment: .top, spacing: 15) {
-            // THE VERTICAL LINE & DOT
-            VStack(spacing: 0) {
-                Circle()
-                    .fill(Color.blue)
-                    .frame(width: 12, height: 12)
-                
-                if !isLast {
-                    Rectangle()
-                        .fill(Color.blue.opacity(0.3))
-                        .frame(width: 2)
-                        .frame(maxHeight: .infinity)
-                }
-            }
-            
-            // THE CONTENT
-            VStack(alignment: .leading, spacing: 4) {
-                HStack {
-                    Text("\(entry.count)")
-                        .font(.title3)
-                        .fontWeight(.bold)
-                    Text("Push-ups")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
+        let currentX = (CGFloat(entry.count) / CGFloat(maxCount)) * availableWidth
+        
+        VStack(alignment: .leading, spacing: 0) {
+            ZStack(alignment: .leading) {
+                // Connecting Line from previous entry
+                if let previous = previousEntry {
+                    let prevX = (CGFloat(previous.count) / CGFloat(maxCount)) * availableWidth
+                    Path { path in
+                        path.move(to: CGPoint(x: prevX + 6, y: -15))
+                        path.addLine(to: CGPoint(x: currentX + 6, y: 15))
+                    }
+                    .stroke(Color.blue.opacity(0.3), lineWidth: 2)
                 }
                 
-                Text(entry.timestamp.formatted(date: .abbreviated, time: .shortened))
-                    .font(.caption2)
-                    .foregroundColor(.gray)
-                
-                Spacer()
-                    .frame(height: 20)
+                // The Dot and Content
+                HStack(alignment: .center, spacing: 10) {
+                    Circle()
+                        .fill(Color.blue)
+                        .frame(width: 12, height: 12)
+                        .shadow(radius: 2)
+                    
+                    VStack(alignment: .leading, spacing: 2) {
+                        HStack(spacing: 4) {
+                            Text("\(entry.count)")
+                                .font(.headline)
+                                .foregroundColor(.blue)
+                            Text("Push-ups")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        Text(entry.timestamp.formatted(date: .omitted, time: .shortened))
+                            .font(.system(size: 8))
+                            .foregroundColor(.gray)
+                    }
+                    .padding(6)
+                    .background(Color.white)
+                    .cornerRadius(8)
+                    .shadow(color: .black.opacity(0.05), radius: 2)
+                }
+                .offset(x: currentX)
             }
         }
     }
