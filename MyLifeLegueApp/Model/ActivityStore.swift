@@ -24,8 +24,8 @@ class ActivityStore {
         // Load some sample data so the app doesn't look empty when first opened.
         // In a real app, this might load from a database or file.
         self.activities = [
-            Activity(name: "Basketball Training", date: Date(), symbol: "basketball.fill", duration: 60, effort: 80, distance: 3.5, fg: 12, threes: 4, rebounds: 5, assists: 8, steals: 2, blocks: 1, ft: 5, extra: "Focused on shooting form", isCompleted: true),
-            Activity(name: "Game Day", date: Date(), symbol: "figure.basketball", duration: 40, effort: 95, distance: 4.2, fg: 15, threes: 2, rebounds: 10, assists: 5, steals: 3, blocks: 2, ft: 4, extra: "Double-double!", isCompleted: false)
+            Activity(name: "Basketball Training", date: Date(), symbol: "basketball.fill", duration: 60, effort: 80, distance: 3.5, fg: "12/20", threes: "4/10", rebounds: "5", assists: "8", steals: "2", blocks: "1", ft: "5/6", extra: "Focused on shooting form", isCompleted: true),
+            Activity(name: "Game Day", date: Date(), symbol: "figure.basketball", duration: 40, effort: 95, distance: 4.2, fg: "15/30", threes: "2/8", rebounds: "10", assists: "5", steals: "3", blocks: "2", ft: "4/4", extra: "Double-double!", isCompleted: false)
         ]
         
         // Clean up any uncompleted activities from past days
@@ -87,13 +87,13 @@ class ActivityStore {
         _ activity: Activity, 
         duration: Double, 
         effort: Int, 
-        fg: Int, 
-        threes: Int, 
-        ft: Int, 
-        rebounds: Int, 
-        assists: Int, 
-        steals: Int, 
-        blocks: Int, 
+        fg: String, 
+        threes: String, 
+        ft: String, 
+        rebounds: String, 
+        assists: String, 
+        steals: String, 
+        blocks: String, 
         note: String, 
         imageData: Data?
     ) {

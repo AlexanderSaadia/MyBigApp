@@ -13,14 +13,14 @@ struct CompleteActivityView: View {
     @State private var duration: Double = 60
     @State private var effort: Int = 50
     
-    // Basketball Specific Stats
-    @State private var fg: Int = 0
-    @State private var threes: Int = 0
-    @State private var ft: Int = 0
-    @State private var rebounds: Int = 0
-    @State private var assists: Int = 0
-    @State private var steals: Int = 0
-    @State private var blocks: Int = 0
+    // Basketball Specific Stats (Changed to String)
+    @State private var fg: String = "0"
+    @State private var threes: String = "0"
+    @State private var ft: String = "0"
+    @State private var rebounds: String = "0"
+    @State private var assists: String = "0"
+    @State private var steals: String = "0"
+    @State private var blocks: String = "0"
     
     // Notes & Photo
     @State private var completionNote: String = ""

@@ -30,7 +30,7 @@ struct ActivityRecordRow: View {
                 Spacer()
                 
                 // Points / Best Stat
-                let points = ((activity.fg - activity.threes) * 2) + (activity.threes * 3) + activity.ft
+                let points = calculatePoints(for: activity)
                 VStack(alignment: .trailing, spacing: 2) {
                     Text("\(points) PTS")
                         .font(.system(.subheadline, design: .rounded))
@@ -50,10 +50,10 @@ struct ActivityRecordRow: View {
             
             // Stats Grid Summary
             HStack(spacing: 15) {
-                SmallMetric(label: "REB", value: "\(activity.rebounds)")
-                SmallMetric(label: "AST", value: "\(activity.assists)")
-                SmallMetric(label: "STL", value: "\(activity.steals)")
-                SmallMetric(label: "BLK", value: "\(activity.blocks)")
+                SmallMetric(label: "REB", value: activity.rebounds)
+                SmallMetric(label: "AST", value: activity.assists)
+                SmallMetric(label: "STL", value: activity.steals)
+                SmallMetric(label: "BLK", value: activity.blocks)
                 
                 Spacer()
                 
@@ -142,19 +142,19 @@ struct ActivityDetailView: View {
                     }
                     
                     HStack(spacing: 20) {
-                        DetailStatBox(label: "FG", value: "\(activity.fg)", icon: "target", color: .orange)
-                        DetailStatBox(label: "3s", value: "\(activity.threes)", icon: "3.circle", color: .orange)
-                        DetailStatBox(label: "FT", value: "\(activity.ft)", icon: "1.circle", color: .orange)
+                        DetailStatBox(label: "FG", value: activity.fg, icon: "target", color: .orange)
+                        DetailStatBox(label: "3s", value: activity.threes, icon: "3.circle", color: .orange)
+                        DetailStatBox(label: "FT", value: activity.ft, icon: "1.circle", color: .orange)
                     }
                     
                     HStack(spacing: 20) {
-                        DetailStatBox(label: "REB", value: "\(activity.rebounds)", icon: "arrow.up.and.down.circle", color: .blue)
-                        DetailStatBox(label: "AST", value: "\(activity.assists)", icon: "person.2.fill", color: .blue)
+                        DetailStatBox(label: "REB", value: activity.rebounds, icon: "arrow.up.and.down.circle", color: .blue)
+                        DetailStatBox(label: "AST", value: activity.assists, icon: "person.2.fill", color: .blue)
                     }
                     
                     HStack(spacing: 20) {
-                        DetailStatBox(label: "STL", value: "\(activity.steals)", icon: "hand.raised.fill", color: .red)
-                        DetailStatBox(label: "BLK", value: "\(activity.blocks)", icon: "hand.wave.fill", color: .red)
+                        DetailStatBox(label: "STL", value: activity.steals, icon: "hand.raised.fill", color: .red)
+                        DetailStatBox(label: "BLK", value: activity.blocks, icon: "hand.wave.fill", color: .red)
                     }
                 }
                 .padding(.horizontal)
@@ -255,7 +255,7 @@ struct DetailStatBox: View {
 // Custom view for stat counters that shows the number prominently
 struct StatCounter: View {
     let label: String
-    @Binding var value: Int
+    @Binding var value: String
     let color: Color
     
     var body: some View {
@@ -266,22 +266,60 @@ struct StatCounter: View {
                 .foregroundColor(.secondary)
             
             HStack(spacing: 5) {
-                TextField("", value: $value, format: .number)
-                    .keyboardType(.numberPad)
+                TextField("", text: $value)
+                    .keyboardType(.numbersAndPunctuation)
                     .multilineTextAlignment(.center)
                     .font(.title2)
                     .fontWeight(.bold)
                     .foregroundColor(color)
-                    .frame(width: 45, height: 45)
+                    .frame(width: 60, height: 45) // Slightly wider for fractional entries
                     .background(color.opacity(0.1))
-                    .clipShape(Circle())
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
                 
-                Stepper("", value: $value, in: 0...999)
-                    .labelsHidden()
-                    .controlSize(.small)
+                Stepper("", onIncrement: {
+                    updateValue(by: 1)
+                }, onDecrement: {
+                    updateValue(by: -1)
+                })
+                .labelsHidden()
+                .controlSize(.small)
             }
         }
     }
+    
+    private func updateValue(by delta: Int) {
+        // We look at the "made" part (the first number)
+        let components = value.components(separatedBy: "/")
+        if let firstPart = components.first, var made = Int(firstPart.trimmingCharacters(in: .whitespaces)) {
+            made = max(0, made + delta)
+            if components.count > 1 {
+                // Reassemble with the original denominator
+                value = "\(made)/\(components[1])"
+            } else {
+                value = "\(made)"
+            }
+        } else if value.isEmpty {
+            value = "\(max(0, delta))"
+        }
+    }
+}
+
+// MARK: - Math Helpers
+func calculatePoints(for activity: Activity) -> Int {
+    let fgMade = parseStat(activity.fg)
+    let threesMade = parseStat(activity.threes)
+    let ftMade = parseStat(activity.ft)
+    
+    let twos = max(0, fgMade - threesMade)
+    return (twos * 2) + (threesMade * 3) + ftMade
+}
+
+func parseStat(_ stat: String) -> Int {
+    let components = stat.components(separatedBy: "/")
+    if let first = components.first, let val = Int(first.trimmingCharacters(in: .whitespaces)) {
+        return val
+    }
+    return 0
 }
 
 #Preview {

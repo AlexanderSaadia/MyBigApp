@@ -66,9 +66,9 @@ struct StatsView: View {
         for activity in activities {
             totalDuration += activity.duration
             totalDistance += activity.distance
-            // Points calculation: 2s (FG - 3s) * 2 + 3s * 3 + FT * 1
-            let twos = activity.fg - activity.threes
-            totalPoints += (twos * 2) + (activity.threes * 3) + activity.ft
+            
+            // Points calculation using parsing helper
+            totalPoints += calculatePoints(for: activity)
         }
         
         return (Int(totalDuration), totalDistance, totalPoints)

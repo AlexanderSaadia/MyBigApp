@@ -1,9 +1,3 @@
-// MARK: - Comments/Notes
-// This view provides a form for recording a new basketball activity.
-// It captures basic information like name and date, performance statistics 
-// (duration, effort, and specific game stats), and optional notes.
-// The view uses a central ActivityStore to persist the new activity.
-
 import SwiftUI
 import PhotosUI
 
@@ -26,14 +20,14 @@ struct AddActivityView: View {
     @State private var duration: Double = 60
     @State private var effort: Int = 50
     
-    // Basketball Specific Stats
-    @State private var fg: Int = 0
-    @State private var threes: Int = 0
-    @State private var ft: Int = 0
-    @State private var rebounds: Int = 0
-    @State private var assists: Int = 0
-    @State private var steals: Int = 0
-    @State private var blocks: Int = 0
+    // Basketball Specific Stats (Changed to String)
+    @State private var fg: String = "0"
+    @State private var threes: String = "0"
+    @State private var ft: String = "0"
+    @State private var rebounds: String = "0"
+    @State private var assists: String = "0"
+    @State private var steals: String = "0"
+    @State private var blocks: String = "0"
     
     private let symbols = ["basketball.fill", "sportscourt.fill", "figure.basketball", "figure.basketball.fill", "trophy.fill"]
     
@@ -198,13 +192,13 @@ struct AddActivityView: View {
         selectedSymbol = "basketball.fill"
         duration = 60
         effort = 50
-        fg = 0
-        threes = 0
-        rebounds = 0
-        assists = 0
-        steals = 0
-        blocks = 0
-        ft = 0
+        fg = "0"
+        threes = "0"
+        rebounds = "0"
+        assists = "0"
+        steals = "0"
+        blocks = "0"
+        ft = "0"
         extra = ""
         selectedItem = nil
         selectedImageData = nil

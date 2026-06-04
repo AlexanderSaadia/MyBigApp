@@ -19,13 +19,16 @@ struct Activity: Identifiable, Codable {
     
     var effort: Int = 0
     var distance: Double = 0
-    var fg: Int = 0
-    var threes: Int = 0
-    var rebounds: Int = 0
-    var assists: Int = 0
-    var steals: Int = 0
-    var blocks: Int = 0
-    var ft: Int = 0
+    
+    // Changed to String to support fractional entries like "3/9"
+    var fg: String = "0"
+    var threes: String = "0"
+    var rebounds: String = "0"
+    var assists: String = "0"
+    var steals: String = "0"
+    var blocks: String = "0"
+    var ft: String = "0"
+    
     var extra: String = ""
     
     // Tracks if the activity was confirmed by the user
