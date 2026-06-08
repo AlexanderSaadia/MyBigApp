@@ -10,37 +10,37 @@ struct HomeView: View {
     // Access the shared data store that was injected at the app level.
     @Environment(ActivityStore.self) private var activityStore
     
-    // Tracks if we are showing the "Push-Ups" list instead of the home content.
+    // --- INPUT: Toggles between views ---
     @State private var showPushUps = false
     
-    // Input state for creating a new goal.
+    // --- INPUT: Form fields for creating a Goal ---
     @State private var newGoalName: String = ""
     @State private var goalTargetDate: Date = Date()
     
-    // Tracks which activity is currently being finished, so we can pass it to the sheet.
+    // --- INPUT: Tracks which activity is selected for completion ---
     @State private var selectedActivity: Activity?
     
     // MARK: - Functions
     
-    // Logic to determine what happens when a "Confirm" button is clicked.
+    // --- DATA FLOW: Decides whether to show a sheet or finish an activity immediately ---
     private func handleConfirm(for activity: Activity) {
         let calendar = Calendar.current
-        // Strip the time from today and the activity date to compare just the calendar day.
         let today = calendar.startOfDay(for: Date())
         let activityDate = calendar.startOfDay(for: activity.date)
         
         if activityDate >= today {
-            // If the activity is today or in the future, we show the full recording sheet.
+            // OUTPUT: Triggers a pop-up sheet.
             selectedActivity = activity
         } else {
-            // If the activity is from the past, we mark it done immediately with 0 stats.
+            // INPUT -> STORE: Sends command to finalize data.
             activityStore.completeActivity(activity)
         }
     }
     
-    // Helper to find goals that are still in progress.
+    // --- ARRAY FILTERING: Finds in-progress goals ---
     func activeGoals() -> [Activity] {
         var result: [Activity] = []
+        // --- ARRAY ITERATION ---
         for activity in activityStore.activities {
             if activity.isGoal && !activity.isCompleted {
                 result.append(activity)
@@ -49,9 +49,10 @@ struct HomeView: View {
         return result
     }
     
-    // Count how many activities the user has ever finished.
+    // --- OUTPUT: A single calculated number ---
     func completedCount() -> Int {
         var total = 0
+        // --- ARRAY ITERATION ---
         for activity in activityStore.activities {
             if activity.isCompleted {
                 total += 1
@@ -60,12 +61,13 @@ struct HomeView: View {
         return total
     }
     
-    // Get all activities scheduled for the current calendar day.
+    // --- ARRAY FILTERING: Gets items for "Today" ---
     func todayActivities() -> [Activity] {
         var result: [Activity] = []
         let calendar = Calendar.current
         let today = Date()
         
+        // --- ARRAY ITERATION ---
         for activity in activityStore.activities {
             if calendar.isDate(activity.date, inSameDayAs: today) {
                 result.append(activity)
@@ -80,24 +82,22 @@ struct HomeView: View {
         NavigationStack {
             Group {
                 if showPushUps {
-                    // Switch to the push-ups timeline if the toggle is active.
+                    // OUTPUT: Specialized Push-Ups view.
                     PushUpsView()
                 } else {
-                    // Show the standard dashboard.
+                    // OUTPUT: Main Dashboard.
                     homeContent
                 }
             }
-            // Update the navigation bar title based on what we are showing.
             .navigationTitle(showPushUps ? "Push-Ups" : "Life League")
             .toolbar {
-                // Top-right button to toggle between Home and Push-Ups.
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(showPushUps ? "Back" : "Push-Ups") {
                         showPushUps.toggle()
                     }
                 }
             }
-            // Displays the completion form as a pop-up sheet when an activity is selected.
+            // OUTPUT: The completion form as a pop-up sheet.
             .sheet(item: $selectedActivity) { activity in
                 CompleteActivityView(activity: activity)
             }
@@ -110,7 +110,7 @@ struct HomeView: View {
         ScrollView { 
             VStack(spacing: 20) {
                 
-                // USER PROFILE: Simple header with name and avatar.
+                // OUTPUT: User profile header.
                 HStack {
                     Circle()
                         .fill(Color.secondary.opacity(0.2) )
@@ -121,7 +121,7 @@ struct HomeView: View {
                 }
                 .padding(.horizontal)
                 
-                // STATS OVERVIEW: A big blue card showing total completions.
+                // OUTPUT: Big blue card showing the "completedCount" array calculation.
                 ZStack {
                     RoundedRectangle(cornerRadius: 15)
                         .fill(Color.blue)
@@ -147,7 +147,7 @@ struct HomeView: View {
                 }
                 .padding(.horizontal)
                 
-                // TODAY'S LIST: Shows what is planned for right now.
+                // OUTPUT LIST: Today's activities.
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Today's Activities")
                         .font(.title3)
@@ -155,7 +155,6 @@ struct HomeView: View {
                     
                     let todaysItems = todayActivities()
                     if todaysItems.isEmpty {
-                        // Empty state if nothing is planned.
                         Text("No activities added for today yet.")
                             .font(.caption)
                             .foregroundColor(.secondary)
@@ -164,10 +163,10 @@ struct HomeView: View {
                             .background(Color.secondary.opacity(0.1))
                             .cornerRadius(10)
                     } else {
-                        // List every item using the MainActivityView component.
+                        // --- ARRAY ITERATION (UI) ---
+                        // Loops through today's filtered array to create visual cards.
                         ForEach(todaysItems) { activity in
                             MainActivityView(activity: activity) {
-                                // Trigger the confirmation logic when clicked.
                                 handleConfirm(for: activity)
                             }
                         }
@@ -175,13 +174,13 @@ struct HomeView: View {
                 }
                 .padding(.horizontal)
                 
-                // GOALS SECTION: Allows quick entry of new long-term targets.
+                // GOALS SECTION
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Active Goals")
                         .font(.title3)
                         .fontWeight(.bold)
                     
-                    // Input form for a new goal.
+                    // --- INPUT FORM: Creates new data ---
                     VStack(spacing: 8) {
                         HStack(spacing: 8) {
                             TextField("Goal name...", text: $newGoalName)
@@ -189,7 +188,7 @@ struct HomeView: View {
                                 .background(Color.white)
                                 .cornerRadius(8)
                             Button(action: {
-                                // Create and add the goal.
+                                // DATA FLOW: Creates an object and sends it to the store.
                                 let newGoal = Activity(
                                     name: newGoalName,
                                     date: goalTargetDate,
@@ -197,7 +196,7 @@ struct HomeView: View {
                                     isGoal: true
                                 )
                                 activityStore.addActivity(newGoal)
-                                // Clear the form.
+                                // Reset inputs.
                                 newGoalName = ""
                                 goalTargetDate = Date()
                             }) {
@@ -207,7 +206,7 @@ struct HomeView: View {
                             }
                             .disabled(newGoalName.isEmpty)
                         }
-                        // Date picker for the goal's deadline.
+                        // --- INPUT: Date Picker ---
                         DatePicker("Target Time:", selection: $goalTargetDate, displayedComponents: [.date, .hourAndMinute])
                             .font(.caption)
                             .fontWeight(.medium)
@@ -216,7 +215,7 @@ struct HomeView: View {
                     .background(Color.yellow.opacity(0.2))
                     .cornerRadius(12)
                     
-                    // List of current active goals.
+                    // OUTPUT LIST: Active goals.
                     let goals = activeGoals()
                     if goals.isEmpty {
                         Text("No active goals.")
@@ -227,6 +226,8 @@ struct HomeView: View {
                             .background(Color.secondary.opacity(0.1))
                             .cornerRadius(10)
                     } else {
+                        // --- ARRAY ITERATION (UI) ---
+                        // Loops through the active goals array to show them on the home screen.
                         ForEach(goals) { goal in
                             HStack {
                                 Image(systemName: "target")
@@ -261,12 +262,12 @@ struct HomeView: View {
 }
 
 // MARK: - Main Activity Row Component
-// A smaller view used specifically on the Home dashboard for a single activity.
 struct MainActivityView: View {
     let activity: Activity
     var onConfirm: () -> Void
     
     var body: some View {
+        // OUTPUT: Visual row for a single item in an array.
         HStack {
             VStack(alignment: .leading) {
                 HStack {
@@ -278,13 +279,11 @@ struct MainActivityView: View {
                     Text(activity.name)
                         .fontWeight(.semibold)
                 }
-                // Show only the time for today's tasks.
                 Text(activity.date.formatted(date: .omitted, time: .shortened))
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
             Spacer()
-            // Toggle between a checkmark and a confirm button based on completion status.
             if activity.isCompleted {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundStyle(.green)
@@ -310,19 +309,7 @@ struct MainActivityView: View {
 
 // MARK: - Preview
 #Preview {
-    // Create an in-memory container for the preview.
-    let schema = Schema([Activity.self])
-    let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
-    let container: ModelContainer
-    do {
-        container = try ModelContainer(for: schema, configurations: [modelConfiguration])
-    } catch {
-        fatalError("Could not create ModelContainer: \(error)")
-    }
-    
-    let store = ActivityStore()
-    store.setContext(container.mainContext)
-    
-    return HomeView()
-        .environment(store)
+    HomeView()
+        .environment(ActivityStore.preview)
+        .modelContainer(ActivityStore.previewContainer)
 }

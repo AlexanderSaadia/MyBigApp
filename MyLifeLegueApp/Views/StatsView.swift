@@ -10,13 +10,13 @@ struct StatsView: View {
     // Access the shared activity data.
     @Environment(ActivityStore.self) private var activityStore
     
-    // Tracks the current filter for the summary (Weekly, Monthly, Yearly).
+    // --- INPUT: Segmented filter choice ---
     @State private var timeRange: TimeRange = .weekly
     
-    // Controls the visibility of the "History Goals" pop-up sheet.
+    // --- INPUT: Toggle for sheet ---
     @State private var showGoalHistory = false
     
-    // Defines the possible time filters for the dashboard.
+    // --- ARRAY: Definition of options ---
     enum TimeRange: String, CaseIterable {
         case weekly = "Weekly"
         case monthly = "Monthly"
@@ -25,29 +25,27 @@ struct StatsView: View {
     
     // MARK: - Computed Properties
     
-    // Filters the master activity list based on the user's selected time range.
+    // --- ARRAY FILTERING: Creates a sub-collection based on time ---
     private func filteredActivities() -> [Activity] {
         let calendar = Calendar.current
         let now = Date()
         var result: [Activity] = []
         
+        // --- ARRAY ITERATION ---
+        // Filters the master list from activityStore.
         for activity in activityStore.activities {
-            // We only include regular training sessions in these stats, not long-term goals.
             if activity.isGoal { continue }
             
             switch timeRange {
             case .weekly:
-                // Check if the session happened in the same week as right now.
                 if calendar.isDate(activity.date, equalTo: now, toGranularity: .weekOfYear) {
                     result.append(activity)
                 }
             case .monthly:
-                // Check if it happened in the same month.
                 if calendar.isDate(activity.date, equalTo: now, toGranularity: .month) {
                     result.append(activity)
                 }
             case .yearly:
-                // Check if it happened in the same year.
                 if calendar.isDate(activity.date, equalTo: now, toGranularity: .year) {
                     result.append(activity)
                 }
@@ -56,11 +54,10 @@ struct StatsView: View {
         return result
     }
     
-    // MARK: - Goal Helpers
-    
-    // Returns a list of all long-term goals that have been marked as completed.
+    // --- ARRAY FILTERING: Finds finished goals ---
     private func completedGoals() -> [Activity] {
         var result: [Activity] = []
+        // --- ARRAY ITERATION ---
         for activity in activityStore.activities {
             if activity.isGoal && activity.isCompleted {
                 result.append(activity)
@@ -69,18 +66,19 @@ struct StatsView: View {
         return result
     }
     
-    // Calculates the totals for Time, Distance, and Basketball Points across the filtered list.
+    // --- OUTPUT CALCULATION: Sums up stats from an array ---
     private var aggregateStats: (duration: Int, distance: Double, points: Int) {
         let activities = filteredActivities()
         var totalDuration: Double = 0
         var totalDistance: Double = 0
         var totalPoints: Int = 0
         
+        // --- ARRAY ITERATION ---
         for activity in activities {
             totalDuration += activity.duration
             totalDistance += activity.distance
             
-            // Use our math helper to parse stats like "3/9" and add to the point total.
+            // DATA FLOW: Calls a math helper to parse strings into integers.
             totalPoints += calculatePoints(for: activity)
         }
         
@@ -95,7 +93,7 @@ struct StatsView: View {
                 // SECTION 1: Summary Dashboard
                 Section {
                     VStack(spacing: 20) {
-                        // The segmented selector for Time Range.
+                        // --- INPUT: Segmented Picker ---
                         Picker("Time Range", selection: $timeRange) {
                             ForEach(TimeRange.allCases, id: \.self) { range in
                                 Text(range.rawValue).tag(range)
@@ -103,7 +101,6 @@ struct StatsView: View {
                         }
                         .pickerStyle(.segmented)
                         
-                        // Button to open the separate goal completion history.
                         Button(action: { showGoalHistory = true }) {
                             HStack {
                                 Image(systemName: "clock.arrow.circlepath")
@@ -117,7 +114,7 @@ struct StatsView: View {
                             .cornerRadius(10)
                         }
                         
-                        // Cards showing the calculated summary totals.
+                        // --- OUTPUT: Summary cards showing calculated totals ---
                         HStack(spacing: 15) {
                             StatSummaryCard(title: "Time", value: "\(aggregateStats.duration)", unit: "m", color: .blue)
                             StatSummaryCard(title: "Dist", value: String(format: "%.1f", aggregateStats.distance), unit: "km", color: .green)
@@ -132,15 +129,16 @@ struct StatsView: View {
                 // SECTION 2: Complete Activity History
                 Section(header: Text("Activity Records")) {
                     if activityStore.activities.isEmpty {
-                        // Empty state.
+                        // OUTPUT: Empty state.
                         Text("No activities recorded yet.")
                             .foregroundColor(.secondary)
                             .padding(.vertical)
                     } else {
-                        // Display sessions in reverse order (newest at the top).
+                        // --- ARRAY ITERATION (UI) ---
+                        // DATA FLOW: Shows the master list in reverse order (newest first).
                         ForEach(activityStore.activities.reversed()) { activity in
                             if !activity.isGoal {
-                                // Tap an entry to see the full detail view.
+                                // OUTPUT: Navigation link to details.
                                 NavigationLink(destination: ActivityDetailView(activity: activity)) {
                                     ActivityRecordRow(activity: activity)
                                         .listRowInsets(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
@@ -151,14 +149,14 @@ struct StatsView: View {
                                 .listRowBackground(Color.clear)
                             }
                         }
-                        // Allow swiping to delete items from history.
+                        // --- INPUT: Swipe to delete ---
                         .onDelete(perform: deleteItems)
                     }
                 }
             }
             .listStyle(.insetGrouped)
             .navigationTitle("Stats & Records")
-            // Show the Goal history when the state is toggled.
+            // OUTPUT: Sheet showing goal history collection.
             .sheet(isPresented: $showGoalHistory) {
                 GoalHistoryView(goals: completedGoals())
             }
@@ -167,7 +165,7 @@ struct StatsView: View {
     
     // MARK: - Functions
     
-    // Deletes items from the store based on their index in the reversed list.
+    // --- DATA FLOW: Deletes an item from the database based on its array index ---
     private func deleteItems(at offsets: IndexSet) {
         let reversedActivities = activityStore.activities.reversed()
         for index in offsets {
@@ -178,19 +176,21 @@ struct StatsView: View {
 }
 
 // MARK: - Goal History Sheet
-// A simplified view for reviewing archived/finished goals.
 struct GoalHistoryView: View {
-    @Environment(\.dismiss) var dismiss // For the "Done" button.
+    @Environment(\.dismiss) var dismiss
+    // --- ARRAY: Passed in from parent ---
     let goals: [Activity]
     
     var body: some View {
         NavigationStack {
             List {
                 if goals.isEmpty {
+                    // OUTPUT: Empty state.
                     Text("No goals completed yet.")
                         .foregroundColor(.secondary)
                         .padding()
                 } else {
+                    // --- ARRAY ITERATION (UI) ---
                     ForEach(goals.reversed()) { goal in
                         VStack(alignment: .leading, spacing: 8) {
                             HStack {
@@ -204,8 +204,8 @@ struct GoalHistoryView: View {
                                     .foregroundColor(.secondary)
                             }
                             
-                            // Show the completion note if one was added.
                             if !goal.completionNote.isEmpty {
+                                // OUTPUT: Goal completion note.
                                 Text(goal.completionNote)
                                     .font(.subheadline)
                                     .italic()
@@ -237,6 +237,7 @@ struct StatSummaryCard: View {
     let color: Color
     
     var body: some View {
+        // OUTPUT: Specialized stat card.
         VStack {
             Text(title)
                 .font(.caption)
@@ -258,19 +259,7 @@ struct StatSummaryCard: View {
 
 // MARK: - Preview
 #Preview {
-    // Create an in-memory container for the preview.
-    let schema = Schema([Activity.self])
-    let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
-    let container: ModelContainer
-    do {
-        container = try ModelContainer(for: schema, configurations: [modelConfiguration])
-    } catch {
-        fatalError("Could not create ModelContainer: \(error)")
-    }
-    
-    let store = ActivityStore()
-    store.setContext(container.mainContext)
-    
-    return StatsView()
-        .environment(store)
+    StatsView()
+        .environment(ActivityStore.preview)
+        .modelContainer(ActivityStore.previewContainer)
 }

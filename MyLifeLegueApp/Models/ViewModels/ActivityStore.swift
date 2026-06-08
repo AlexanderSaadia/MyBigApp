@@ -5,6 +5,7 @@ import Observation
 // MARK: - ActivityStore ViewModel
 // This class manages the entire list of activities and goals for the application.
 // We updated it to sync with SwiftData so data is saved permanently.
+@MainActor
 @Observable
 class ActivityStore {
     
@@ -13,9 +14,9 @@ class ActivityStore {
     // The SwiftData context used for saving and deleting.
     private var modelContext: ModelContext?
     
-    // The master list of activities.
-    // In this version, we keep it as a normal array for the views to read,
-    // and we update it whenever the database changes.
+    // --- ARRAY / COLLECTION ---
+    // This is the master list where ALL activities and goals are kept.
+    // DATA FLOW: It is populated from the database and used by all Views to display information.
     var activities: [Activity] = []
     
     // MARK: - Initializer
@@ -30,7 +31,7 @@ class ActivityStore {
     
     // MARK: - Methods
     
-    // Manual trigger to ensure the database writes to disk.
+    // DATA FLOW: This method ensures that all temporary changes are written to the physical disk.
     func save() {
         guard let context = modelContext else { 
             print("Warning: Attempted to save with nil context.")
@@ -38,7 +39,7 @@ class ActivityStore {
         }
         do {
             try context.save()
-            // Update local array after save.
+            // Update local array after save to keep the UI in sync.
             let descriptor = FetchDescriptor<Activity>(sortBy: [SortDescriptor(\.date)])
             self.activities = try context.fetch(descriptor)
         } catch {
@@ -58,11 +59,12 @@ class ActivityStore {
     func fetchActivities() {
         guard let context = modelContext else { return }
         
-        // Create a request to get all Activities.
+        // --- ARRAY ITERATION (Internal) ---
+        // We query the database to get everything, sorted by date.
         let descriptor = FetchDescriptor<Activity>(sortBy: [SortDescriptor(\.date)])
         
         do {
-            // Update our local array with data from the database.
+            // Update our local master list.
             self.activities = try context.fetch(descriptor)
         } catch {
             print("Failed to fetch activities: \(error)")
@@ -76,6 +78,8 @@ class ActivityStore {
         let today = calendar.startOfDay(for: Date())
         
         var deletedAny = false
+        // --- ARRAY ITERATION ---
+        // We loop through the master list to find "stale" activities.
         for activity in activities {
             let activityDate = calendar.startOfDay(for: activity.date)
             
@@ -92,27 +96,27 @@ class ActivityStore {
         }
     }
     
-    // Saves a new activity to SwiftData.
+    // --- INPUT HANDLER ---
+    // DATA FLOW: Takes a new Activity object and adds it to the persistent database.
     func addActivity(_ activity: Activity) {
         guard let context = modelContext else { 
             print("Error: Cannot add activity, context is nil.")
-            // Fallback for preview/testing: add to local array so it shows up at least.
             self.activities.append(activity)
             return 
         }
-        // Add to database.
         context.insert(activity)
-        // Ensure it's saved to disk.
         save()
     }
     
-    // Switches the completion status of a specific activity.
+    // --- INPUT HANDLER ---
+    // Updates a specific activity's completion status.
     func toggleCompletion(for activity: Activity) {
         activity.isCompleted.toggle()
         save()
     }
     
-    // Marks an activity as finished with a note and optional photo data.
+    // --- INPUT HANDLER ---
+    // Finalizes an activity with a note and photo.
     func completeActivity(_ activity: Activity, note: String = "", imageData: Data? = nil) {
         activity.isCompleted = true
         activity.completionNote = note
@@ -120,7 +124,8 @@ class ActivityStore {
         save()
     }
     
-    // Saves all statistics and marks the activity as done.
+    // --- INPUT HANDLER (Batch Update) ---
+    // Updates all performance metrics at once.
     func updateAndCompleteActivity(
         _ activity: Activity, 
         duration: Double, 
@@ -150,17 +155,31 @@ class ActivityStore {
         save()
     }
     
-    // Permanent deletion from SwiftData.
+    // Removes an activity forever.
     func deleteActivity(_ activity: Activity) {
         guard let context = modelContext else { return }
         context.delete(activity)
         save()
     }
     
-    // Returns activities for a specific day.
+    // MARK: - Preview Helper
+    static let previewContainer: ModelContainer = {
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        return try! ModelContainer(for: Activity.self, PushUpEntry.self, configurations: config)
+    }()
+    
+    static let preview: ActivityStore = {
+        let store = ActivityStore()
+        store.setContext(previewContainer.mainContext)
+        return store
+    }()
+    
+    // --- OUTPUT HELPER ---
+    // DATA FLOW: Filters the master list to show only items for a specific date.
     func activities(for date: Date) -> [Activity] {
         var result: [Activity] = []
         let calendar = Calendar.current
+        // --- ARRAY ITERATION ---
         for activity in activities {
             if calendar.isDate(activity.date, inSameDayAs: date) {
                 result.append(activity)

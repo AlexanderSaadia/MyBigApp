@@ -6,16 +6,19 @@ import SwiftData
 // Added @Model so SwiftData can save this history permanently.
 @Model
 final class PushUpEntry: Identifiable {
-    // Unique identifier for the entry.
+    // A unique identifier for every set of push-ups logged.
     @Attribute(.unique) var id: UUID = UUID()
     
-    // The number of push-ups performed.
+    // --- INPUT FIELDS ---
+    
+    // The number of push-ups performed (User Input).
     var count: Int
     
-    // The exact date and time the session was logged.
+    // The exact date and time the session was logged (Automatic Input).
     var timestamp: Date
     
     // MARK: - Initializer
+    // DATA FLOW: Used to create a new record when the user taps "Log Session".
     init(count: Int, timestamp: Date) {
         self.count = count
         self.timestamp = timestamp

@@ -9,6 +9,9 @@ final class Activity: Identifiable {
     // A unique identifier for every activity created.
     @Attribute(.unique) var id: UUID = UUID()
     
+    // --- INPUT FIELDS (Stored Data) ---
+    // These properties store the data that comes from user input forms.
+    
     // The display name of the activity.
     var name: String
     
@@ -18,7 +21,7 @@ final class Activity: Identifiable {
     // An SF Symbol name used to represent this activity visually.
     var symbol: String
     
-    // --- STATISTICS FIELDS ---
+    // --- STATISTICS INPUTS ---
     
     // The total time spent on the activity in minutes.
     var duration: Double = 0
@@ -53,20 +56,20 @@ final class Activity: Identifiable {
     // Initial extra details.
     var extra: String = ""
     
-    // Status flag.
+    // Status flag (Input from completion toggle).
     var isCompleted: Bool = false
     
-    // Goal flag.
+    // Goal flag (Distinguishes between a plan and a target).
     var isGoal: Bool = false
     
-    // Binary data for a photo.
+    // Binary data for a photo (Input from PhotosPicker).
     @Attribute(.externalStorage) var imageData: Data? = nil
     
     // Note added during completion.
     var completionNote: String = ""
     
     // MARK: - Initializer
-    // SwiftData models require an initializer that sets all properties.
+    // DATA FLOW: This initializer is the entry point for creating new activity data.
     init(
         name: String,
         date: Date,

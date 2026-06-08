@@ -1,5 +1,6 @@
 import SwiftUI
 import PhotosUI
+import SwiftData
 
 // MARK: - Add Activity View
 // This view provides a detailed form for creating and scheduling a new session.
@@ -10,21 +11,21 @@ struct AddActivityView: View {
     // Access the shared data store.
     @Environment(ActivityStore.self) private var activityStore
     
-    // Basic Information
+    // --- INPUT FIELDS: Basic Information ---
     @State private var name: String = ""
     @State private var selectedDate: Date = Date()
     @State private var selectedSymbol: String = "basketball.fill"
     @State private var extra: String = ""
     
-    // Photo Selection State
+    // --- INPUT: Photo Selection ---
     @State private var selectedItem: PhotosPickerItem?
     @State private var selectedImageData: Data?
     
-    // Performance Statistics
+    // --- INPUT: Performance Statistics ---
     @State private var duration: Double = 60
     @State private var effort: Int = 50
     
-    // Basketball Specific Stats
+    // --- INPUT: Basketball Specific Stats ---
     @State private var fg: String = "0"
     @State private var threes: String = "0"
     @State private var ft: String = "0"
@@ -33,7 +34,7 @@ struct AddActivityView: View {
     @State private var steals: String = "0"
     @State private var blocks: String = "0"
     
-    // List of available icons the user can choose from.
+    // --- ARRAY: Available icons ---
     private let symbols = ["basketball.fill", "sportscourt.fill", "figure.basketball", "figure.basketball.fill", "trophy.fill"]
     
     // MARK: - Body
@@ -60,17 +61,17 @@ struct AddActivityView: View {
     
     private var basicInfoSection: some View {
         Section(header: Text("Basic Info")) {
-            // Input for the session name.
+            // --- INPUT: TextField ---
             TextField("Activity Name", text: $name)
-            // Date picker that supports selecting both the day and time.
+            // --- INPUT: DatePicker ---
             DatePicker("Date & Time", selection: $selectedDate, displayedComponents: [.date, .hourAndMinute])
             
-            // System photo picker to select an image from the library.
+            // --- INPUT: PhotosPicker ---
             PhotosPicker(selection: $selectedItem, matching: .images) {
                 HStack {
                     Label("Add Photo", systemImage: "photo")
                     Spacer()
-                    // Display a small preview of the photo if one is selected.
+                    // OUTPUT: Small thumbnail of chosen image.
                     if let selectedImageData, let uiImage = UIImage(data: selectedImageData) {
                         Image(uiImage: uiImage)
                             .resizable()
@@ -80,9 +81,9 @@ struct AddActivityView: View {
                     }
                 }
             }
-            // Watch for changes in the picker selection and load the actual image data.
             .onChange(of: selectedItem) { _, newItem in
                 Task {
+                    // DATA FLOW: Async loading of image bytes.
                     if let data = try? await newItem?.loadTransferable(type: Data.self) {
                         selectedImageData = data
                     }
@@ -93,7 +94,7 @@ struct AddActivityView: View {
     
     private var gameStatisticsSection: some View {
         Section(header: Text("Game Statistics")) {
-            // Duration input with both a numeric field and a stepper (+/-).
+            // --- INPUT: Duration ---
             HStack {
                 Text("Duration (mins)")
                 Spacer()
@@ -105,7 +106,7 @@ struct AddActivityView: View {
                     .labelsHidden()
             }
             
-            // Effort level slider from 0% to 100%.
+            // --- INPUT: Effort Slider ---
             VStack(alignment: .leading) {
                 HStack {
                     Text("Effort Level")
@@ -116,13 +117,13 @@ struct AddActivityView: View {
                 Slider(value: Binding(get: { Double(effort) }, set: { effort = Int($0) }), in: 0...100)
             }
             
-            // A horizontal scrolling list of specific basketball counters (FG, 3s, etc).
+            // OUTPUT: Grid of basketball counters.
             statCountersScroll
         }
     }
     
     private var statCountersScroll: some View {
-        // Grid setup with 2 fixed rows.
+        // --- COLLECTION SETUP: Layout configuration ---
         let rows = [
             GridItem(.fixed(70)),
             GridItem(.fixed(70))
@@ -130,7 +131,7 @@ struct AddActivityView: View {
         
         return ScrollView(.horizontal, showsIndicators: false) {
             LazyHGrid(rows: rows, spacing: 20) {
-                // Using our custom StatCounter component for each metric.
+                // --- OUTPUT: Using StatCounter component for each metric ---
                 StatCounter(label: "FG", value: $fg, color: .orange)
                 StatCounter(label: "3s", value: $threes, color: .orange)
                 StatCounter(label: "FT", value: $ft, color: .orange)
@@ -146,7 +147,7 @@ struct AddActivityView: View {
     
     private var extraNotesSection: some View {
         Section(header: Text("Extra Notes")) {
-            // Multi-line text field for additional details.
+            // --- INPUT: Multi-line text ---
             TextField("Enter details...", text: $extra, axis: .vertical)
                 .lineLimit(3...5)
         }
@@ -154,16 +155,18 @@ struct AddActivityView: View {
     
     private var symbolSelectionSection: some View {
         Section(header: Text("Symbol")) {
-            // Horizontal list of icons to tap and select.
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 20) {
+                    // --- ARRAY ITERATION (UI) ---
+                    // Loops through the 'symbols' array to show icon choices.
                     ForEach(symbols, id: \.self) { symbol in
                         Image(systemName: symbol)
                             .font(.title)
                             .padding(10)
-                            // Highlight the background if this specific symbol is selected.
+                            // OUTPUT: Highlight if selected.
                             .background(selectedSymbol == symbol ? Color.accentColor.opacity(0.2) : Color.clear)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
+                            // INPUT: Tap to change state.
                             .onTapGesture { selectedSymbol = symbol }
                     }
                 }
@@ -177,7 +180,6 @@ struct AddActivityView: View {
             Text("Add Activity")
                 .frame(maxWidth: .infinity)
                 .padding()
-                // Button is gray and unclickable until a name is entered.
                 .background(name.isEmpty ? Color.gray : Color.blue)
                 .foregroundColor(.white)
                 .cornerRadius(10)
@@ -187,7 +189,7 @@ struct AddActivityView: View {
     
     // MARK: - Functions
     
-    // Collects all current state values, creates a new Activity object, and saves it.
+    // --- DATA FLOW: Gathers all form inputs into a new Activity object ---
     private func addActivity() {
         let newActivity = Activity(
             name: name, 
@@ -208,13 +210,13 @@ struct AddActivityView: View {
             imageData: selectedImageData
         )
         
-        // Push to the shared store.
+        // INPUT -> STORE: Sends the new object to be saved in the database.
         activityStore.addActivity(newActivity)
-        // Reset the form so the user can add another one.
+        
+        // UI ACTION: Clear inputs for next time.
         resetForm()
     }
     
-    // Resets all input variables back to their starting values.
     private func resetForm() {
         name = ""
         selectedDate = Date()
@@ -237,5 +239,6 @@ struct AddActivityView: View {
 // MARK: - Preview
 #Preview {
     AddActivityView()
-        .environment(ActivityStore())
+        .environment(ActivityStore.preview)
+        .modelContainer(ActivityStore.previewContainer)
 }

@@ -60,7 +60,6 @@
 			isa = PBXGroup;
 			children = (
 				738E6F9E2F56169600F44D22 /* MyLifeLegueApp */,
-				738E6F9B2F56169600F44D22 /* Assets.xcassets */,
 				738E6F8E2F56167900F44D22 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -76,12 +75,12 @@
 		738E6F9E2F56169600F44D22 /* MyLifeLegueApp */ = {
 			isa = PBXGroup;
 			children = (
+				738E6F9D2F56169600F44D22 /* LifeLegueApp.swift */,
 				73F38FCE2FAE6C970000D876 /* README.md */,
-				738E6FA22F5616A500F44D22 /* Views */,
+				738E6F9B2F56169600F44D22 /* Assets.xcassets */,
 				73F390272FD1DBFC0000D876 /* Models */,
-				73F390282FD1DBFC0000D876 /* ViewModels */,
+				738E6FA22F5616A500F44D22 /* Views */,
 				73F390292FD1DBFC0000D876 /* Utilities */,
-				73F390312FD1DC020000D876 /* App */,
 			);
 			path = MyLifeLegueApp;
 			sourceTree = "<group>";
@@ -90,12 +89,12 @@
 			isa = PBXGroup;
 			children = (
 				738E6F9C2F56169600F44D22 /* MainTabView.swift */,
-				73F3902A2FD1DBFC0000D876 /* Home */,
-				73F3902B2FD1DBFC0000D876 /* Calendar */,
-				73F3902C2FD1DBFC0000D876 /* Stats */,
+				738E6FA32F5624C300F44D22 /* HomeView.swift */,
+				736551D02FA1801700869F7B /* PushUpsView.swift */,
+				738E6FA52F56257B00F44D22 /* CalendarView.swift */,
 				73F3902D2FD1DBFC0000D876 /* AddActivity */,
-				73F3902E2FD1DBFC0000D876 /* PushUps */,
-				73F3902F2FD1DBFC0000D876 /* Journal */,
+				738E6FA92F5625AE00F44D22 /* JournalView.swift */,
+				73F38FD02FAE6FD00000D876 /* StatsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -105,6 +104,7 @@
 			children = (
 				73F38FC82FAE682E0000D876 /* Activity.swift */,
 				73F390322FD1DCBC0000D876 /* PushUpEntry.swift */,
+				73F390282FD1DBFC0000D876 /* ViewModels */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -125,30 +125,6 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
-		73F3902A2FD1DBFC0000D876 /* Home */ = {
-			isa = PBXGroup;
-			children = (
-				738E6FA32F5624C300F44D22 /* HomeView.swift */,
-			);
-			path = Home;
-			sourceTree = "<group>";
-		};
-		73F3902B2FD1DBFC0000D876 /* Calendar */ = {
-			isa = PBXGroup;
-			children = (
-				738E6FA52F56257B00F44D22 /* CalendarView.swift */,
-			);
-			path = Calendar;
-			sourceTree = "<group>";
-		};
-		73F3902C2FD1DBFC0000D876 /* Stats */ = {
-			isa = PBXGroup;
-			children = (
-				73F38FD02FAE6FD00000D876 /* StatsView.swift */,
-			);
-			path = Stats;
-			sourceTree = "<group>";
-		};
 		73F3902D2FD1DBFC0000D876 /* AddActivity */ = {
 			isa = PBXGroup;
 			children = (
@@ -157,30 +133,6 @@
 				73F38FD22FB2ADCB0000D876 /* ActivityViews.swift */,
 			);
 			path = AddActivity;
-			sourceTree = "<group>";
-		};
-		73F3902E2FD1DBFC0000D876 /* PushUps */ = {
-			isa = PBXGroup;
-			children = (
-				736551D02FA1801700869F7B /* PushUpsView.swift */,
-			);
-			path = PushUps;
-			sourceTree = "<group>";
-		};
-		73F3902F2FD1DBFC0000D876 /* Journal */ = {
-			isa = PBXGroup;
-			children = (
-				738E6FA92F5625AE00F44D22 /* JournalView.swift */,
-			);
-			path = Journal;
-			sourceTree = "<group>";
-		};
-		73F390312FD1DC020000D876 /* App */ = {
-			isa = PBXGroup;
-			children = (
-				738E6F9D2F56169600F44D22 /* LifeLegueApp.swift */,
-			);
-			path = App;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

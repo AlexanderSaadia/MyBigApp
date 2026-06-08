@@ -1,16 +1,17 @@
 import SwiftUI
+import SwiftData
 
 // MARK: - Activity Record Row Component
 // This is the card-like view used in the "Stats" list to summarize a single activity.
 struct ActivityRecordRow: View {
+    // --- INPUT: A single activity object from an array ---
     let activity: Activity
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            // TOP ROW: Icon, Name, Date, and Points.
+            // OUTPUT: Summary data.
             HStack {
                 HStack(spacing: 12) {
-                    // Rounded background for the activity symbol.
                     ZStack {
                         Circle()
                             .fill(Color.blue.opacity(0.1))
@@ -30,7 +31,7 @@ struct ActivityRecordRow: View {
                 
                 Spacer()
                 
-                // Display the calculated total points for this session.
+                // OUTPUT: Points calculation from a math helper.
                 let points = calculatePoints(for: activity)
                 VStack(alignment: .trailing, spacing: 2) {
                     Text("\(points) PTS")
@@ -38,7 +39,6 @@ struct ActivityRecordRow: View {
                         .fontWeight(.bold)
                         .foregroundColor(.orange)
                     
-                    // Show a "Confirmed" badge if the activity is marked as completed.
                     if activity.isCompleted {
                         HStack(spacing: 4) {
                             Image(systemName: "checkmark.seal.fill")
@@ -50,7 +50,7 @@ struct ActivityRecordRow: View {
                 }
             }
             
-            // BOTTOM ROW: A horizontal grid of secondary stats (Rebounds, Assists, etc).
+            // OUTPUT: Grid of secondary stats.
             HStack(spacing: 15) {
                 SmallMetric(label: "REB", value: activity.rebounds)
                 SmallMetric(label: "AST", value: activity.assists)
@@ -59,18 +59,16 @@ struct ActivityRecordRow: View {
                 
                 Spacer()
                 
-                // EFFORT BAR: A small visual progress bar representing the effort percentage.
+                // OUTPUT: visual effort bar.
                 VStack(alignment: .trailing, spacing: 4) {
                     Text("EFFORT")
                         .font(.system(size: 8, weight: .bold))
                         .foregroundColor(.secondary)
                     
                     ZStack(alignment: .leading) {
-                        // The gray background track.
                         RoundedRectangle(cornerRadius: 2)
                             .fill(Color.secondary.opacity(0.2))
                             .frame(width: 60, height: 4)
-                        // The blue progress indicator (scaled by effort/100).
                         RoundedRectangle(cornerRadius: 2)
                             .fill(Color.blue)
                             .frame(width: CGFloat(activity.effort) * 0.6, height: 4)
@@ -89,7 +87,6 @@ struct ActivityRecordRow: View {
 }
 
 // MARK: - Small Metric Component
-// A simple vertical layout for displaying a label and a value (e.g., REB 5).
 struct SmallMetric: View {
     let label: String
     let value: String
@@ -107,14 +104,14 @@ struct SmallMetric: View {
 }
 
 // MARK: - Activity Detail View
-// The full-screen page that opens when you tap an activity in the list.
 struct ActivityDetailView: View {
+    // --- INPUT: Detailed activity data ---
     let activity: Activity
     
     var body: some View {
         ScrollView {
             VStack(spacing: 25) {
-                // HERO SECTION: Large icon and name.
+                // OUTPUT: Hero header.
                 ZStack {
                     Circle()
                         .fill(Color.blue.opacity(0.1))
@@ -131,16 +128,9 @@ struct ActivityDetailView: View {
                         .fontWeight(.bold)
                     Text(activity.date.formatted(date: .complete, time: .shortened))
                         .foregroundColor(.secondary)
-                    
-                    if activity.isCompleted {
-                        Label("Confirmed", systemImage: "checkmark.seal.fill")
-                            .font(.headline)
-                            .foregroundColor(.green)
-                            .padding(.top, 5)
-                    }
                 }
                 
-                // STATS GRID: Detailed metric boxes for every recorded value.
+                // OUTPUT: Full statistics grid.
                 VStack(spacing: 20) {
                     HStack(spacing: 20) {
                         DetailStatBox(label: "Effort", value: "\(activity.effort)%", icon: "bolt.fill", color: .yellow)
@@ -165,7 +155,7 @@ struct ActivityDetailView: View {
                 }
                 .padding(.horizontal)
                 
-                // NOTES SECTION: Displays both initial details and completion notes.
+                // OUTPUT: Notes.
                 if !activity.extra.isEmpty || !activity.completionNote.isEmpty {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Notes")
@@ -203,7 +193,7 @@ struct ActivityDetailView: View {
                     .padding(.horizontal)
                 }
                 
-                // PHOTO SECTION: If a photo was saved, it is displayed here at full width.
+                // OUTPUT: Image viewer.
                 if let imageData = activity.imageData, let uiImage = UIImage(data: imageData) {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Photo")
@@ -226,7 +216,6 @@ struct ActivityDetailView: View {
 }
 
 // MARK: - Detail Stat Box Component
-// A reusable component for the statistics grid in the detail view.
 struct DetailStatBox: View {
     let label: String
     let value: String
@@ -258,11 +247,10 @@ struct DetailStatBox: View {
 }
 
 // MARK: - Stat Counter Component
-// This is the custom input field used in Add and Complete views.
-// It supports text entry (like "3/9") while still allowing the Stepper to work.
 struct StatCounter: View {
     let label: String
-    @Binding var value: String // Bound to the activity's string property.
+    // --- INPUT: Bidirectional link to view state ---
+    @Binding var value: String
     let color: Color
     
     var body: some View {
@@ -273,7 +261,7 @@ struct StatCounter: View {
                 .foregroundColor(.secondary)
             
             HStack(spacing: 5) {
-                // TextField allows manual typing of fractions or special characters.
+                // --- INPUT: Manual typing ---
                 TextField("", text: $value)
                     .keyboardType(.numbersAndPunctuation)
                     .multilineTextAlignment(.center)
@@ -284,7 +272,7 @@ struct StatCounter: View {
                     .background(color.opacity(0.1))
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                 
-                // Stepper allows quick +1 or -1 adjustments.
+                // --- INPUT: Button adjustments ---
                 Stepper("", onIncrement: {
                     updateValue(by: 1)
                 }, onDecrement: {
@@ -296,42 +284,34 @@ struct StatCounter: View {
         }
     }
     
-    // Logic to increment the first part of a fraction (the "made" shots).
+    // --- DATA FLOW: Logic to parse and update text-based numbers ---
     private func updateValue(by delta: Int) {
-        // Split the string by the "/" character if it exists.
         let components = value.components(separatedBy: "/")
         if let firstPart = components.first, var made = Int(firstPart.trimmingCharacters(in: .whitespaces)) {
-            // Update the count, preventing it from going below zero.
             made = max(0, made + delta)
             if components.count > 1 {
-                // If it was a fraction (e.g., "3/9"), reassemble it with the updated numerator.
                 value = "\(made)/\(components[1])"
             } else {
-                // If it was just a number, update it.
                 value = "\(made)"
             }
         } else if value.isEmpty {
-            // Default to the increment value if the field was empty.
             value = "\(max(0, delta))"
         }
     }
 }
 
 // MARK: - Global Math Helpers
-// These functions are available to any view in the app.
+// DATA FLOW: Functions used across multiple arrays and views to process raw strings into numbers.
 
-// Calculates the total basketball points (2s, 3s, FTs).
 func calculatePoints(for activity: Activity) -> Int {
     let fgMade = parseStat(activity.fg)
     let threesMade = parseStat(activity.threes)
     let ftMade = parseStat(activity.ft)
     
-    // Calculate 2-pointers by subtracting 3s from total Field Goals.
     let twos = max(0, fgMade - threesMade)
     return (twos * 2) + (threesMade * 3) + ftMade
 }
 
-// Helper to extract the first integer from a string like "3/9" or "10".
 func parseStat(_ stat: String) -> Int {
     let components = stat.components(separatedBy: "/")
     if let first = components.first, let val = Int(first.trimmingCharacters(in: .whitespaces)) {
@@ -339,6 +319,7 @@ func parseStat(_ stat: String) -> Int {
     }
     return 0
 }
+
 #Preview {
     ActivityRecordRow(activity: Activity(
         name: "Basketball Session",
@@ -353,4 +334,3 @@ func parseStat(_ stat: String) -> Int {
     ))
     .padding()
 }
-
