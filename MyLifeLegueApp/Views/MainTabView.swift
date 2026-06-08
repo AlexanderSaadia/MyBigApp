@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 // MARK: - Main Tab View
 // This view acts as the root container for the app's primary navigation.
@@ -66,7 +67,20 @@ struct PickerView: View {
 
 // MARK: - Preview
 #Preview {
-    PickerView()
-        // Provide a sample store for the preview to use.
-        .environment(ActivityStore())
+    // Create an in-memory container for the preview.
+    let schema = Schema([Activity.self, PushUpEntry.self])
+    let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+    let container: ModelContainer
+    do {
+        container = try ModelContainer(for: schema, configurations: [modelConfiguration])
+    } catch {
+        fatalError("Could not create ModelContainer: \(error)")
+    }
+    
+    let store = ActivityStore()
+    store.setContext(container.mainContext)
+    
+    return PickerView()
+        .environment(store)
+        .modelContainer(container)
 }

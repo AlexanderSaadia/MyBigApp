@@ -34,5 +34,4 @@ struct JournalView: View {
 // MARK: - Preview
 #Preview {
     JournalView()
-        .environment(ActivityStore())
 }

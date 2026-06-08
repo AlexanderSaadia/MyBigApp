@@ -339,3 +339,18 @@ func parseStat(_ stat: String) -> Int {
     }
     return 0
 }
+#Preview {
+    ActivityRecordRow(activity: Activity(
+        name: "Basketball Session",
+        date: .now,
+        symbol: "figure.basketball",
+        effort: 85,
+        fg: "5/10",
+        threes: "2/4",
+        rebounds: "5",
+        assists: "3",
+        isCompleted: true
+    ))
+    .padding()
+}
+

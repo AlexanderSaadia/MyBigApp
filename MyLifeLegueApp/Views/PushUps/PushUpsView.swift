@@ -11,6 +11,7 @@ struct PushUpsView: View {
     @Environment(\.modelContext) var modelContext
     
     // Query existing pushup history from SwiftData.
+    // The @Query macro automatically updates the view whenever the database changes.
     @Query(sort: \PushUpEntry.timestamp, order: .forward) var history: [PushUpEntry]
     
     // Tracks the user's text input for the current session.
@@ -110,6 +111,9 @@ struct PushUpsView: View {
             let newEntry = PushUpEntry(count: count, timestamp: Date())
             // Insert it into the database context.
             modelContext.insert(newEntry)
+            
+            // Explicitly save the context to ensure the entry is written to disk.
+            try? modelContext.save()
             
             pushUpCount = ""
             

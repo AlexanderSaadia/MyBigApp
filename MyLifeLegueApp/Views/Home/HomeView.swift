@@ -1,5 +1,5 @@
 import SwiftUI
-import PhotosUI
+import SwiftData
 
 // MARK: - Home Dashboard View
 // This is the primary landing page of the app, showing progress, today's tasks, and active goals.
@@ -310,6 +310,19 @@ struct MainActivityView: View {
 
 // MARK: - Preview
 #Preview {
-    HomeView()
-        .environment(ActivityStore())
+    // Create an in-memory container for the preview.
+    let schema = Schema([Activity.self])
+    let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+    let container: ModelContainer
+    do {
+        container = try ModelContainer(for: schema, configurations: [modelConfiguration])
+    } catch {
+        fatalError("Could not create ModelContainer: \(error)")
+    }
+    
+    let store = ActivityStore()
+    store.setContext(container.mainContext)
+    
+    return HomeView()
+        .environment(store)
 }

@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 // MARK: - Calendar View Mode
 // Defines the 4 different zoom levels for our calendar interface.
@@ -395,6 +396,19 @@ struct MonthGridView: View {
 
 // MARK: - Preview
 #Preview {
-    CalendarView()
-        .environment(ActivityStore())
+    // Create an in-memory container for the preview.
+    let schema = Schema([Activity.self])
+    let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+    let container: ModelContainer
+    do {
+        container = try ModelContainer(for: schema, configurations: [modelConfiguration])
+    } catch {
+        fatalError("Could not create ModelContainer: \(error)")
+    }
+    
+    let store = ActivityStore()
+    store.setContext(container.mainContext)
+    
+    return CalendarView()
+        .environment(store)
 }

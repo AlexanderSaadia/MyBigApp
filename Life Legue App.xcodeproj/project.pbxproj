@@ -15,7 +15,6 @@
 		738E6FA62F56257B00F44D22 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6FA52F56257B00F44D22 /* CalendarView.swift */; };
 		738E6FA82F56259600F44D22 /* AddActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6FA72F56259600F44D22 /* AddActivityView.swift */; };
 		738E6FAA2F5625AE00F44D22 /* JournalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6FA92F5625AE00F44D22 /* JournalView.swift */; };
-		738E6FAC2F5625CB00F44D22 /* AIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738E6FAB2F5625CB00F44D22 /* AIView.swift */; };
 		73F38FC92FAE682E0000D876 /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F38FC82FAE682E0000D876 /* Activity.swift */; };
 		73F38FCB2FAE682E0000D876 /* ActivityStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F38FCA2FAE682E0000D876 /* ActivityStore.swift */; };
 		73F38FCD2FAE68520000D876 /* CalendarUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F38FCC2FAE68520000D876 /* CalendarUtils.swift */; };
@@ -36,7 +35,6 @@
 		738E6FA52F56257B00F44D22 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		738E6FA72F56259600F44D22 /* AddActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddActivityView.swift; sourceTree = "<group>"; };
 		738E6FA92F5625AE00F44D22 /* JournalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalView.swift; sourceTree = "<group>"; };
-		738E6FAB2F5625CB00F44D22 /* AIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIView.swift; sourceTree = "<group>"; };
 		73F38FC82FAE682E0000D876 /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
 		73F38FCA2FAE682E0000D876 /* ActivityStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityStore.swift; sourceTree = "<group>"; };
 		73F38FCC2FAE68520000D876 /* CalendarUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarUtils.swift; sourceTree = "<group>"; };
@@ -98,7 +96,6 @@
 				73F3902D2FD1DBFC0000D876 /* AddActivity */,
 				73F3902E2FD1DBFC0000D876 /* PushUps */,
 				73F3902F2FD1DBFC0000D876 /* Journal */,
-				73F390302FD1DBFC0000D876 /* Components */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -157,6 +154,7 @@
 			children = (
 				738E6FA72F56259600F44D22 /* AddActivityView.swift */,
 				73F390252FD1D23D0000D876 /* CompleteActivityView.swift */,
+				73F38FD22FB2ADCB0000D876 /* ActivityViews.swift */,
 			);
 			path = AddActivity;
 			sourceTree = "<group>";
@@ -175,15 +173,6 @@
 				738E6FA92F5625AE00F44D22 /* JournalView.swift */,
 			);
 			path = Journal;
-			sourceTree = "<group>";
-		};
-		73F390302FD1DBFC0000D876 /* Components */ = {
-			isa = PBXGroup;
-			children = (
-				73F38FD22FB2ADCB0000D876 /* ActivityViews.swift */,
-				738E6FAB2F5625CB00F44D22 /* AIView.swift */,
-			);
-			path = Components;
 			sourceTree = "<group>";
 		};
 		73F390312FD1DC020000D876 /* App */ = {
@@ -275,7 +264,6 @@
 				73F38FD32FB2ADCB0000D876 /* ActivityViews.swift in Sources */,
 				73F38FC92FAE682E0000D876 /* Activity.swift in Sources */,
 				738E6FA62F56257B00F44D22 /* CalendarView.swift in Sources */,
-				738E6FAC2F5625CB00F44D22 /* AIView.swift in Sources */,
 				73F38FD12FAE6FD00000D876 /* StatsView.swift in Sources */,
 				738E6FA02F56169600F44D22 /* LifeLegueApp.swift in Sources */,
 				73F390332FD1DCBC0000D876 /* PushUpEntry.swift in Sources */,

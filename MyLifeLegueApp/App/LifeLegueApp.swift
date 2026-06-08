@@ -17,6 +17,7 @@ struct Life_Legue_AppApp: App {
             Activity.self,
             PushUpEntry.self,
         ])
+        // isStoredInMemoryOnly: false ensures data is saved to the disk.
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
         do {
@@ -32,6 +33,7 @@ struct Life_Legue_AppApp: App {
         WindowGroup {
             PickerView()
                 .environment(activityStore)
+                .modelContext(sharedModelContainer.mainContext)
                 // Inject the SwiftData context into the store so it can save to disk.
                 .onAppear {
                     activityStore.setContext(sharedModelContainer.mainContext)

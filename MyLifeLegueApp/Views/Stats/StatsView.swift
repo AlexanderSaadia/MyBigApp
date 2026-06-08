@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 // MARK: - Stats & Records View
 // This view provides a high-level overview of practice data and goal history.
@@ -257,6 +258,19 @@ struct StatSummaryCard: View {
 
 // MARK: - Preview
 #Preview {
-    StatsView()
-        .environment(ActivityStore())
+    // Create an in-memory container for the preview.
+    let schema = Schema([Activity.self])
+    let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+    let container: ModelContainer
+    do {
+        container = try ModelContainer(for: schema, configurations: [modelConfiguration])
+    } catch {
+        fatalError("Could not create ModelContainer: \(error)")
+    }
+    
+    let store = ActivityStore()
+    store.setContext(container.mainContext)
+    
+    return StatsView()
+        .environment(store)
 }
