@@ -67,22 +67,20 @@ struct StatsView: View {
     }
     
     // --- OUTPUT CALCULATION: Sums up stats from an array ---
-    private var aggregateStats: (duration: Int, distance: Double, points: Int) {
+    private var aggregateStats: (duration: Int, points: Int) {
         let activities = filteredActivities()
         var totalDuration: Double = 0
-        var totalDistance: Double = 0
         var totalPoints: Int = 0
         
         // --- ARRAY ITERATION ---
         for activity in activities {
             totalDuration += activity.duration
-            totalDistance += activity.distance
             
             // DATA FLOW: Calls a math helper to parse strings into integers.
             totalPoints += calculatePoints(for: activity)
         }
         
-        return (Int(totalDuration), totalDistance, totalPoints)
+        return (Int(totalDuration), totalPoints)
     }
 
     // MARK: - Body
@@ -117,7 +115,6 @@ struct StatsView: View {
                         // --- OUTPUT: Summary cards showing calculated totals ---
                         HStack(spacing: 15) {
                             StatSummaryCard(title: "Time", value: "\(aggregateStats.duration)", unit: "m", color: .blue)
-                            StatSummaryCard(title: "Dist", value: String(format: "%.1f", aggregateStats.distance), unit: "km", color: .green)
                             StatSummaryCard(title: "Pts", value: "\(aggregateStats.points)", unit: "tot", color: .orange)
                         }
                     }

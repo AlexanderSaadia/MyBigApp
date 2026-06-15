@@ -19,6 +19,12 @@ class ActivityStore {
     // DATA FLOW: It is populated from the database and used by all Views to display information.
     var activities: [Activity] = []
     
+    // The master list of all journal entries.
+    var journalEntries: [JournalEntry] = []
+    
+    // The user's profile.
+    var userProfile: UserProfile?
+    
     // MARK: - Initializer
     
     init(modelContext: ModelContext? = nil) {
@@ -26,6 +32,8 @@ class ActivityStore {
         // If we have a context, fetch the existing data.
         if modelContext != nil {
             fetchActivities()
+            fetchJournalEntries()
+            fetchUserProfile()
         }
     }
     
@@ -39,9 +47,14 @@ class ActivityStore {
         }
         do {
             try context.save()
-            // Update local array after save to keep the UI in sync.
-            let descriptor = FetchDescriptor<Activity>(sortBy: [SortDescriptor(\.date)])
-            self.activities = try context.fetch(descriptor)
+            // Update local arrays after save to keep the UI in sync.
+            let activityDescriptor = FetchDescriptor<Activity>(sortBy: [SortDescriptor(\.date)])
+            self.activities = try context.fetch(activityDescriptor)
+            
+            let journalDescriptor = FetchDescriptor<JournalEntry>(sortBy: [SortDescriptor(\.date, order: .reverse)])
+            self.journalEntries = try context.fetch(journalDescriptor)
+            
+            fetchUserProfile()
         } catch {
             print("Failed to save context: \(error)")
         }
@@ -51,8 +64,30 @@ class ActivityStore {
     func setContext(_ context: ModelContext) {
         self.modelContext = context
         fetchActivities()
+        fetchJournalEntries()
+        fetchUserProfile()
         // Run cleanup once when the context is first connected.
         cleanupOldUncompletedActivities()
+    }
+    
+    // Loads the user profile from the database.
+    func fetchUserProfile() {
+        guard let context = modelContext else { return }
+        let descriptor = FetchDescriptor<UserProfile>()
+        do {
+            let profiles = try context.fetch(descriptor)
+            if let firstProfile = profiles.first {
+                self.userProfile = firstProfile
+            } else {
+                // Create a default profile if none exists.
+                let defaultProfile = UserProfile(name: "Alexander Saadia", bio: "Starting my journey.")
+                context.insert(defaultProfile)
+                save()
+                self.userProfile = defaultProfile
+            }
+        } catch {
+            print("Failed to fetch user profile: \(error)")
+        }
     }
     
     // Loads all activities from the SwiftData database into our local array.
@@ -68,6 +103,17 @@ class ActivityStore {
             self.activities = try context.fetch(descriptor)
         } catch {
             print("Failed to fetch activities: \(error)")
+        }
+    }
+    
+    // Loads all journal entries from the database.
+    func fetchJournalEntries() {
+        guard let context = modelContext else { return }
+        let descriptor = FetchDescriptor<JournalEntry>(sortBy: [SortDescriptor(\.date, order: .reverse)])
+        do {
+            self.journalEntries = try context.fetch(descriptor)
+        } catch {
+            print("Failed to fetch journal entries: \(error)")
         }
     }
     
@@ -162,10 +208,28 @@ class ActivityStore {
         save()
     }
     
+    // --- INPUT HANDLER ---
+    // Adds a new journal entry.
+    func addJournalEntry(_ entry: JournalEntry) {
+        guard let context = modelContext else {
+            self.journalEntries.insert(entry, at: 0)
+            return
+        }
+        context.insert(entry)
+        save()
+    }
+    
+    // Removes a journal entry.
+    func deleteJournalEntry(_ entry: JournalEntry) {
+        guard let context = modelContext else { return }
+        context.delete(entry)
+        save()
+    }
+    
     // MARK: - Preview Helper
     static let previewContainer: ModelContainer = {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        return try! ModelContainer(for: Activity.self, PushUpEntry.self, configurations: config)
+        return try! ModelContainer(for: Activity.self, PushUpEntry.self, JournalEntry.self, UserProfile.self, configurations: config)
     }()
     
     static let preview: ActivityStore = {
@@ -186,5 +250,16 @@ class ActivityStore {
             }
         }
         return result
+    }
+    
+    // Finds a journal entry for a specific date.
+    func journalEntry(for date: Date) -> JournalEntry? {
+        let calendar = Calendar.current
+        for entry in journalEntries {
+            if calendar.isDate(entry.date, inSameDayAs: date) {
+                return entry
+            }
+        }
+        return nil
     }
 }

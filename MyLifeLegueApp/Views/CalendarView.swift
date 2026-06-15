@@ -114,15 +114,25 @@ struct DayCell: View {
     var body: some View {
         // --- ARRAY FILTERING: Finds items for THIS specific day cell ---
         let activities = activityStore.activities(for: day)
+        let journal = activityStore.journalEntry(for: day)
         
         VStack(spacing: 2 * scale) {
             // OUTPUT: The day number.
-            Text(CalendarUtils.dayNumber(from: day))
-                .font(.system(size: 16 * scale))
-                .foregroundColor(isOtherMonth ? .gray.opacity(0.5) : (isSelected ? .white : .primary))
-                .frame(width: 30 * scale, height: 30 * scale)
-                .background(isSelected ? Color.blue : (isToday ? Color.blue.opacity(0.3) : Color.clear))
-                .clipShape(Circle())
+            ZStack(alignment: .topTrailing) {
+                Text(CalendarUtils.dayNumber(from: day))
+                    .font(.system(size: 16 * scale))
+                    .foregroundColor(isOtherMonth ? .gray.opacity(0.5) : (isSelected ? .white : .primary))
+                    .frame(width: 30 * scale, height: 30 * scale)
+                    .background(isSelected ? Color.blue : (isToday ? Color.blue.opacity(0.3) : Color.clear))
+                    .clipShape(Circle())
+                
+                if journal != nil {
+                    Image(systemName: "pencil.circle.fill")
+                        .font(.system(size: 10 * scale))
+                        .foregroundColor(.purple)
+                        .offset(x: 5, y: -5)
+                }
+            }
             
             // --- OUTPUT (Activity Dots) ---
             HStack(spacing: 2 * scale) {
@@ -160,22 +170,58 @@ struct DailyCalendarView: View {
     var body: some View {
         // --- ARRAY FILTERING: Gets items from the store for this date ---
         let activities = activityStore.activities(for: date)
+        let journal = activityStore.journalEntry(for: date)
         
-        if activities.isEmpty {
-            // OUTPUT: Empty state.
-            VStack {
-                Spacer()
-                Image(systemName: "calendar.badge.exclamationmark")
-                    .font(.system(size: 50))
-                    .foregroundColor(.gray)
-                Text("No activities for this day")
-                    .foregroundColor(.gray)
-                Spacer()
+        VStack {
+            if let journal = journal {
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack {
+                        Label("Journal Reflection", systemImage: "pencil.and.outline")
+                            .font(.headline)
+                        
+                        Spacer()
+                        
+                        Image(systemName: journal.isThumbsUp ? "hand.thumbsup.fill" : "hand.thumbsdown.fill")
+                            .foregroundColor(journal.isThumbsUp ? .green : .red)
+                        
+                        Text("\(journal.rating)/10")
+                            .font(.subheadline)
+                            .fontWeight(.bold)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color.purple.opacity(0.1))
+                            .foregroundColor(.purple)
+                            .cornerRadius(8)
+                    }
+                    
+                    Text(journal.content)
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                        .lineLimit(3)
+                }
+                .padding()
+                .background(Color.purple.opacity(0.05))
+                .cornerRadius(12)
+                .padding(.horizontal)
             }
-        } else {
-            // --- ARRAY ITERATION (UI) ---
-            List {
-                ForEach(activities) { activity in
+            
+            if activities.isEmpty {
+                // OUTPUT: Empty state.
+                VStack {
+                    if journal == nil {
+                        Spacer()
+                        Image(systemName: "calendar.badge.exclamationmark")
+                            .font(.system(size: 50))
+                            .foregroundColor(.gray)
+                        Text("No activities for this day")
+                            .foregroundColor(.gray)
+                        Spacer()
+                    }
+                }
+            } else {
+                // --- ARRAY ITERATION (UI) ---
+                List {
+                    ForEach(activities) { activity in
                     HStack {
                         Image(systemName: activity.isGoal ? "target" : activity.symbol)
                             .foregroundColor(activity.isGoal ? .orange : .blue)
@@ -207,6 +253,7 @@ struct DailyCalendarView: View {
             }
         }
     }
+}
 }
 
 // MARK: - Weekly View

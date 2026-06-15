@@ -111,14 +111,38 @@ struct HomeView: View {
             VStack(spacing: 20) {
                 
                 // OUTPUT: User profile header.
-                HStack {
-                    Circle()
-                        .fill(Color.secondary.opacity(0.2) )
-                        .frame(width: 50, height: 50)
-                    Text("Alexander Saadia")
-                        .font(.headline)
-                    Spacer()
+                NavigationLink(destination: ProfileView()) {
+                    HStack {
+                        if let data = activityStore.userProfile?.avatarData, let uiImage = UIImage(data: data) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .clipShape(Circle())
+                        } else {
+                            Circle()
+                                .fill(LinearGradient(colors: [.blue, .purple], startPoint: .topLeading, endPoint: .bottomTrailing))
+                                .frame(width: 50, height: 50)
+                                .overlay {
+                                    Image(systemName: "person.fill")
+                                        .foregroundStyle(.white)
+                                }
+                        }
+                        
+                        VStack(alignment: .leading) {
+                            Text(activityStore.userProfile?.name ?? "Alexander Saadia")
+                                .font(.headline)
+                                .foregroundStyle(.primary)
+                        }
+                        
+                        Spacer()
+                        
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
                 }
+                .buttonStyle(.plain)
                 .padding(.horizontal)
                 
                 // OUTPUT: Big blue card showing the "completedCount" array calculation.

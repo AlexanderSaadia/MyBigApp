@@ -35,7 +35,7 @@ struct AddActivityView: View {
     @State private var blocks: String = "0"
     
     // --- ARRAY: Available icons ---
-    private let symbols = ["basketball.fill", "sportscourt.fill", "figure.basketball", "figure.basketball.fill", "trophy.fill"]
+    private let symbols = ["basketball.fill", "sportscourt.fill", "figure.basketball", "trophy.fill", "point.3.filled.connected.trianglepath.dotted"]
     
     // MARK: - Body
     

@@ -16,6 +16,8 @@ struct Life_Legue_AppApp: App {
         let schema = Schema([
             Activity.self,
             PushUpEntry.self,
+            JournalEntry.self,
+            UserProfile.self,
         ])
         // isStoredInMemoryOnly: false ensures data is saved to the disk.
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
